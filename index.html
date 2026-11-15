@@ -1,0 +1,1730 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>才能探し 〜才能を見つけよう〜</title>
+<meta property="og:title" content="才能探し 〜才能を見つけよう〜">
+<meta property="og:description" content="16のミニゲームで「センス」と呼ばれてきた才能を実測。結果は異世界風ステータス表＋ジョブ＋二つ名で表示されます。">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://red-freegames.github.io/sainou-sagashi/">
+<style>
+  *{ margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html{ touch-action:manipulation; }
+  body{ font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Noto Sans JP",sans-serif; background:#070d24; color:#eaf6ff; min-height:100vh; }
+  .wrap{ max-width:520px; margin:0 auto; padding:14px 14px 40px; }
+  .screen{ display:none; }
+  .screen.active{ display:block; }
+  h1.logo{ text-align:center; font-size:38px; font-weight:900; letter-spacing:.08em; color:#ffe082; text-shadow:0 0 18px rgba(255,224,130,.45); margin-top:18px; }
+  .tagline{ text-align:center; color:#9fd8ff; font-size:14px; margin-top:6px; line-height:1.7; }
+  .win{ background:linear-gradient(160deg,rgba(10,40,90,.96),rgba(8,24,60,.96)); border:2px solid #6ec6ff; border-radius:10px; box-shadow:0 0 0 4px rgba(110,198,255,.15),0 0 22px rgba(110,198,255,.30),inset 0 0 30px rgba(110,198,255,.10); padding:16px 18px; margin-top:16px; }
+  .win .win-head{ text-align:center; font-size:11px; letter-spacing:.35em; color:#9fd8ff; }
+  label.lbl{ display:block; font-size:13px; color:#9fd8ff; margin:16px 0 6px; }
+  input#nameInput{ width:100%; font-size:17px; padding:11px 12px; border-radius:8px; border:2px solid #6ec6ff; background:rgba(255,255,255,.08); color:#fff; outline:none; }
+  .btn{ display:block; width:100%; font-size:18px; font-weight:900; padding:14px; border:none; border-radius:10px; background:linear-gradient(180deg,#ffd54f,#ffb300); color:#3a2703; cursor:pointer; margin-top:16px; box-shadow:0 4px 0 #b27d00; }
+  .btn:active{ transform:translateY(3px); box-shadow:0 1px 0 #b27d00; }
+  .btn.sub{ background:rgba(255,255,255,.10); color:#cfeaff; box-shadow:none; border:2px solid rgba(159,216,255,.5); font-size:15px; }
+  .btn.blue{ background:linear-gradient(180deg,#4fc3f7,#0288d1); color:#fff; box-shadow:0 4px 0 #01579b; }
+  .note{ font-size:12px; color:#8fb8d8; text-align:center; margin-top:12px; line-height:1.7; }
+  #bestBox{ text-align:center; margin-top:14px; font-size:13px; color:#ffe082; min-height:18px; }
+  /* game screen */
+  #hud{ display:flex; justify-content:space-between; align-items:center; font-size:13px; color:#9fd8ff; margin-top:4px; }
+  #hudGame{ font-weight:900; color:#fff; font-size:15px; }
+  #gameTitle{ text-align:center; font-size:22px; font-weight:900; margin-top:10px; }
+  #gameInstr{ text-align:center; font-size:14px; color:#cfeaff; margin-top:6px; line-height:1.6; min-height:44px; }
+  #stage{ margin-top:12px; }
+  .pad{ height:300px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:24px; font-weight:900; text-align:center; padding:16px; user-select:none; cursor:pointer; border:2px solid rgba(159,216,255,.4); background:#37474f; color:#fff; line-height:1.5; }
+  .pad.wait{ background:#8e2424; }
+  .pad.go{ background:#2e9e4f; }
+  .pad.done{ background:#1c4d2e; }
+  .grid{ display:grid; gap:8px; margin:0 auto; }
+  .cell{ aspect-ratio:1; border-radius:8px; background:rgba(255,255,255,.10); border:2px solid rgba(159,216,255,.35); display:flex; align-items:center; justify-content:center; font-size:30px; cursor:pointer; user-select:none; }
+  .cell.lit{ background:#ffd54f; border-color:#ffe082; box-shadow:0 0 12px rgba(255,213,79,.7); }
+  .cell.sel{ background:#4fc3f7; border-color:#b3e5fc; }
+  .cell.bad{ background:#8e2424; }
+  .choices{ display:flex; flex-direction:column; gap:10px; }
+  .choice{ font-size:17px; font-weight:700; padding:14px; border-radius:10px; border:2px solid rgba(159,216,255,.5); background:rgba(255,255,255,.07); color:#fff; cursor:pointer; text-align:left; }
+  .choice:active{ background:rgba(79,195,247,.35); }
+  .row2{ display:flex; gap:10px; }
+  .row2 .choice{ flex:1; text-align:center; }
+  .timebar{ height:8px; background:rgba(255,255,255,.12); border-radius:4px; overflow:hidden; margin-top:10px; }
+  .timebar > div{ height:100%; background:#ffd54f; width:100%; }
+  .bigshow{ text-align:center; font-size:52px; font-weight:900; letter-spacing:.15em; padding:26px 0; color:#ffe082; min-height:110px; }
+  .keypad{ display:grid; grid-template-columns:repeat(3,1fr); gap:8px; max-width:280px; margin:0 auto; }
+  .key{ font-size:24px; font-weight:900; padding:14px 0; border-radius:10px; border:2px solid rgba(159,216,255,.5); background:rgba(255,255,255,.07); color:#fff; cursor:pointer; text-align:center; user-select:none; }
+  .key:active{ background:rgba(79,195,247,.35); }
+  #typedNum{ text-align:center; font-size:34px; font-weight:900; letter-spacing:.2em; min-height:46px; color:#fff; }
+  .tiles{ display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin-top:10px; }
+  .tile{ font-size:26px; font-weight:900; width:58px; height:58px; border-radius:10px; border:2px solid rgba(159,216,255,.5); background:rgba(255,255,255,.08); color:#fff; display:flex; align-items:center; justify-content:center; cursor:pointer; user-select:none; }
+  .tile.used{ opacity:.25; pointer-events:none; }
+  #builtWord{ text-align:center; font-size:32px; font-weight:900; letter-spacing:.2em; min-height:44px; color:#ffe082; }
+  .face-grid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .face-card{ border:2px solid rgba(159,216,255,.45); border-radius:10px; background:rgba(255,255,255,.06); padding:12px 8px; text-align:center; cursor:pointer; }
+  .face-card .fc-face{ font-size:44px; }
+  .face-card .fc-line{ font-size:13px; margin-top:6px; line-height:1.5; color:#eaf6ff; }
+  .beat-dot{ width:150px; height:150px; border-radius:50%; margin:14px auto; background:rgba(255,255,255,.10); border:3px solid rgba(159,216,255,.5); display:flex; align-items:center; justify-content:center; font-size:15px; color:#9fd8ff; }
+  .beat-dot.on{ background:#ffd54f; color:#3a2703; box-shadow:0 0 26px rgba(255,213,79,.8); }
+  #toast{ position:fixed; left:50%; top:38%; transform:translate(-50%,-50%) scale(.8); background:rgba(8,24,60,.95); border:2px solid #ffd54f; color:#ffe082; font-size:24px; font-weight:900; padding:20px 30px; border-radius:12px; opacity:0; pointer-events:none; transition:all .18s; z-index:50; text-align:center; white-space:nowrap; }
+  #toast.show{ opacity:1; transform:translate(-50%,-50%) scale(1); }
+  /* result */
+  .st-title-label{ text-align:center; font-size:12px; color:#9fd8ff; margin-top:6px; }
+  .st-title{ text-align:center; font-size:27px; font-weight:900; color:#ffe082; text-shadow:0 0 10px rgba(255,224,130,.6); line-height:1.4; }
+  .st-job-label{ text-align:center; font-size:12px; color:#9fd8ff; margin-top:8px; }
+  .st-epithet{ text-align:center; font-size:15px; color:#cfeaff; margin-top:3px; }
+  .st-epithet b{ color:#ffe082; font-weight:900; }
+  .st-namerow{ display:flex; justify-content:space-between; align-items:baseline; border-bottom:1px solid rgba(159,216,255,.4); padding:8px 2px 6px; margin-top:6px; }
+  .st-name{ font-size:18px; font-weight:700; }
+  .st-lv{ font-size:14px; color:#9fd8ff; }
+  .st-lv b{ font-size:22px; color:#fff; }
+  .st-params{ display:grid; grid-template-columns:1fr 1fr; gap:8px 18px; margin-top:12px; font-size:14px; }
+  .st-param .pv{ float:right; font-weight:900; }
+  .rank-S{ color:#ffd54f; } .rank-A{ color:#a5d6a7; } .rank-B{ color:#7cc7ff; } .rank-C{ color:#b0bec5; } .rank-D{ color:#ef9a9a; }
+  .st-bar{ height:5px; background:rgba(255,255,255,.15); border-radius:3px; margin-top:3px; }
+  .st-bar > div{ height:100%; border-radius:3px; background:#4fc3f7; }
+  .st-sec{ border-top:1px solid rgba(159,216,255,.4); margin-top:13px; padding-top:9px; font-size:14px; }
+  .st-sec .sec-label{ color:#9fd8ff; font-size:11px; letter-spacing:.2em; }
+  #stComment{ font-size:13px; color:#cfeaff; line-height:1.7; margin-top:6px; }
+  footer{ text-align:center; font-size:11px; color:#5f7d99; margin-top:26px; line-height:1.8; }
+
+  /* ===== DQ-style boss battle ===== */
+  #bossStage{ position:relative; background:radial-gradient(ellipse at 50% 68%, rgba(142,36,170,.50), rgba(10,6,24,0) 62%), radial-gradient(ellipse at 82% 8%, rgba(63,81,181,.35), rgba(0,0,0,0) 55%), #070714; border-radius:10px; padding:12px 10px 14px; overflow:hidden; }
+  #bossStage::before{ content:""; position:absolute; inset:0; background-image:radial-gradient(1.5px 1.5px at 20% 30%, #fff, transparent), radial-gradient(1.5px 1.5px at 75% 18%, #cfeaff, transparent), radial-gradient(1px 1px at 55% 42%, #fff, transparent), radial-gradient(1px 1px at 88% 55%, #fff, transparent), radial-gradient(1.5px 1.5px at 35% 12%, #fff, transparent), radial-gradient(1px 1px at 8% 60%, #cfeaff, transparent); opacity:.7; pointer-events:none; }
+  .dqwin{ background:#000; border:3px solid #fff; border-radius:6px; color:#fff; padding:8px 10px; position:relative; z-index:1; }
+  .dq-toprow{ display:flex; gap:10px; }
+  #pwin{ flex:1.15; } #bwin{ flex:1; }
+  #pwName, #bwName{ font-weight:900; font-size:16px; border-bottom:2px solid #fff; padding-bottom:3px; margin-bottom:5px; }
+  .pw-line{ display:flex; justify-content:space-between; font-size:14px; margin-top:2px; }
+  .dq-bar{ height:5px; background:rgba(255,255,255,.25); margin:2px 0 4px; }
+  .dq-bar > div{ height:100%; background:#69f0ae; transition:width .4s; }
+  #bwHpFill{ background:#ef5350; }
+  #pwMpFill{ background:#4fc3f7; }
+  #pwJob{ font-size:12px; color:#ffe082; margin-top:3px; }
+  #bossField{ display:flex; justify-content:center; padding:18px 0 8px; position:relative; z-index:1; }
+  #bossSprite{ width:250px; max-width:74vw; filter:drop-shadow(0 10px 22px rgba(0,0,0,.7)); }
+  #bossSprite.dead{ filter:grayscale(1) brightness(.5); transform:translateY(8px); }
+  #msgWin{ min-height:118px; font-size:15px; line-height:1.85; white-space:pre-wrap; margin-top:8px; }
+  #cmdWin{ position:absolute; left:10px; bottom:10px; width:47%; max-width:215px; z-index:2; padding:6px 0; }
+  .cmd-item{ display:block; width:100%; background:none; border:none; color:#fff; font-size:17px; font-weight:700; text-align:left; padding:7px 10px 7px 27px; position:relative; cursor:pointer; font-family:inherit; }
+  .cmd-item::before{ content:""; position:absolute; left:9px; }
+  .cmd-item:hover::before, .cmd-item:active::before{ content:"▶"; }
+  .cmd-item:disabled{ color:#666; }
+  .cmd-note{ font-size:11px; color:#9fd8ff; padding:0 10px 5px 27px; }
+
+  #singleList{ display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:10px; }
+  .sg-btn{ background:#101c3f; border:1px solid #31406e; border-radius:10px; color:#eaf4ff; padding:10px 8px; text-align:left; cursor:pointer; font-family:inherit; }
+  .sg-btn:active{ background:#1b2a52; }
+  .sg-t{ display:block; font-weight:900; font-size:14px; }
+  .sg-s{ display:block; font-size:11px; color:#9fd8ff; margin-top:3px; }
+  #sgRank{ font-size:44px; font-weight:900; color:#ffd54f; }
+  #sgScore{ font-size:30px; font-weight:900; }
+
+  /* ===== party windows + boss info + manifestation ===== */
+  #partyRow{ display:flex; gap:6px; position:relative; z-index:1; }
+  .pwin{ flex:1; padding:6px 7px; min-width:0; }
+  .pwin .pw-name{ font-size:12.5px; font-weight:900; border-bottom:2px solid #fff; padding-bottom:2px; margin-bottom:3px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .pwin .pw-line{ display:flex; justify-content:space-between; font-size:12px; margin-top:1px; }
+  .pwin .pw-job{ font-size:10.5px; color:#ffe082; margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .pwin.leader{ border-color:#ffd54f; }
+  .pwin.dead{ opacity:.5; }
+  .pwin.dead .pw-name{ color:#aaa; }
+  #bossInfo{ margin-top:10px; }
+  #bwNameRow{ display:flex; justify-content:space-between; align-items:baseline; }
+  #bwName{ font-weight:900; font-size:16px; }
+  #bwTurn{ font-size:12px; color:#9fd8ff; }
+  #manifestOverlay{ position:fixed; inset:0; background:#000; z-index:90; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:28px; opacity:0; pointer-events:none; transition:opacity .9s ease; padding:24px; text-align:center; }
+  #manifestOverlay.show{ opacity:1; pointer-events:auto; }
+  #manifestText{ color:#fff; font-size:19px; line-height:2.15; font-weight:700; letter-spacing:.06em; min-height:180px; }
+  .mf-line{ animation:mfFade 1.1s ease both; }
+  @keyframes mfFade{ from{ opacity:0; transform:translateY(10px); } to{ opacity:1; transform:none; } }
+  #manifestBtns .btn{ width:230px; margin:7px auto; }
+  /* ===== RED FREE GAMES nav ===== */
+  .rfg-nav{ display:flex; gap:8px; margin-bottom:6px; }
+  .rfg-btn{ flex:1; text-align:center; text-decoration:none; font-size:14px; font-weight:900; padding:10px 6px; border-radius:10px; border:2px solid rgba(159,216,255,.5); background:rgba(255,255,255,.08); color:#cfeaff; }
+  .rfg-btn:active{ background:rgba(79,195,247,.35); }
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav class="rfg-nav">
+  <a class="rfg-btn" href="https://red-freegames.github.io/">🏠 HOME</a>
+  <a class="rfg-btn" href="https://red-freegames.github.io/">🎮 他のゲームを見る</a>
+</nav>
+
+<!-- ===== TITLE ===== -->
+<section id="scr-title" class="screen active">
+  <h1 class="logo">才能探し</h1>
+  <p class="tagline">〜才能を見つけよう〜<br>16のミニゲームで「センス」を実測し、<br>異世界ジョブと二つ名で鑑定します。</p>
+  <div class="win">
+    <div class="win-head">― ADVENTURER REGISTRATION ―</div>
+    <label class="lbl" for="nameInput">名前（ステータス表に表示されます）</label>
+    <input id="nameInput" type="text" maxlength="10" placeholder="名もなき転生者">
+    <button class="btn" id="btnStart">鑑定をはじめる</button>
+    <div id="bestBox"></div>
+    <p class="note">1ゲーム10〜20秒、全16ゲームで約5〜6分。<br>判定はすべて実測です。乱数は使いません。</p>
+  </div>
+  <div class="win" style="margin-top:14px;">
+    <div class="win-head">― SINGLE EVENTS ―</div>
+    <p class="note">種目だけを切り出して遊べます。記録は種目別ベストとして残ります。</p>
+    <div id="singleList"></div>
+  </div>
+  <footer>実況・配信・動画投稿・収益化OK<br>才能ステータス鑑定所</footer>
+</section>
+
+<!-- ===== GAME ===== -->
+<section id="scr-game" class="screen">
+  <div id="hud"><span id="hudProg">第1問 / 10</span><span id="hudGame"></span></div>
+  <div id="gameTitle"></div>
+  <p id="gameInstr"></p>
+  <div class="timebar" id="timebarWrap" style="display:none;"><div id="timebarFill"></div></div>
+  <div id="stage"></div>
+</section>
+
+<!-- ===== RESULT ===== -->
+<section id="scr-result" class="screen">
+  <div class="win" id="statusWin">
+    <div class="win-head">― STATUS ―</div>
+    <div class="st-namerow"><div class="st-name" id="stName"></div><div class="st-lv">Lv. <b id="stLv"></b></div></div>
+    <div class="st-job-label">ジョブ</div>
+    <div class="st-title" id="stJob"></div>
+    <div class="st-epithet">二つ名　<b id="stTitle"></b></div>
+    <div class="st-params" id="stParams"></div>
+    <div class="st-sec">
+      <div class="sec-label">《固有スキル》</div>
+      <div id="stSkills" style="margin-top:4px;"></div>
+      <div id="stComment"></div>
+    </div>
+  </div>
+  <div id="bossArea" style="margin-top:14px;">
+    <button class="btn" id="btnBoss" style="display:none;background:#8e2424;">⚔ ラスボスに挑む</button>
+    <p class="note" id="bossLock" style="display:none;text-align:center;"></p>
+  </div>
+  <button class="btn blue" id="btnSaveImg">ステータスを画像で保存</button>
+  <button class="btn" id="btnTweet">Xでシェア</button>
+  <button class="btn sub" id="btnRestart">もう一度鑑定する</button>
+  <nav class="rfg-nav" style="margin-top:16px;">
+    <a class="rfg-btn" href="https://red-freegames.github.io/">🏠 HOME</a>
+    <a class="rfg-btn" href="https://red-freegames.github.io/">🎮 他のゲームを見る</a>
+  </nav>
+  <footer>実況・配信・動画投稿・収益化OK<br>才能ステータス鑑定所</footer>
+</section>
+
+<!-- ===== SINGLE RESULT ===== -->
+<section id="scr-single" class="screen">
+  <div class="win">
+    <div class="win-head">― EVENT RESULT ―</div>
+    <div id="sgGame" style="text-align:center;font-weight:900;font-size:19px;"></div>
+    <div id="sgParam" style="text-align:center;color:#9fd8ff;font-size:13px;margin-top:2px;"></div>
+    <div style="text-align:center;margin:14px 0 4px;"><span id="sgRank"></span> <span id="sgScore"></span></div>
+    <div id="sgDetail" style="text-align:center;font-size:14px;color:#cfeaff;"></div>
+    <div id="sgBest" style="text-align:center;font-size:13px;color:#ffe082;margin-top:6px;"></div>
+    <button class="btn" id="btnSgRetry">もう一度この種目</button>
+    <button class="btn blue" id="btnSgFull">全種目の鑑定へ</button>
+    <button class="btn sub" id="btnSgList">種目一覧に戻る</button>
+  </div>
+</section>
+
+<!-- ===== BOSS ===== -->
+<section id="scr-boss" class="screen">
+  <div id="bossStage">
+    <div id="partyRow"></div>
+    <div id="bossField"><div id="bossSprite"><svg viewBox="0 0 320 250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="魔王ノーセンス">
+  <defs>
+    <linearGradient id="bossGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#9c27b0"/><stop offset="1" stop-color="#4a148c"/>
+    </linearGradient>
+    <linearGradient id="wingGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#5e35b1"/><stop offset="1" stop-color="#1a1033"/>
+    </linearGradient>
+  </defs>
+  <g fill="url(#wingGrad)" stroke="#9575cd" stroke-width="3" stroke-linejoin="round">
+    <path d="M158,118 L54,22 L82,80 L30,58 L74,124 L46,136 L158,158 Z"/>
+    <path d="M162,118 L266,22 L238,80 L290,58 L246,124 L274,136 L162,158 Z"/>
+  </g>
+  <g fill="#d7ccc8" stroke="#8d6e63" stroke-width="2" stroke-linejoin="round">
+    <path d="M106,64 C84,42 76,20 80,2 C100,16 114,36 120,56 Z"/>
+    <path d="M214,64 C236,42 244,20 240,2 C220,16 206,36 200,56 Z"/>
+  </g>
+  <path d="M96,196 L160,222 L224,196 L214,238 L106,238 Z" fill="#311b92" stroke="#7e57c2" stroke-width="3" stroke-linejoin="round"/>
+  <circle cx="160" cy="222" r="10" fill="#ef5350" stroke="#ffcdd2" stroke-width="2"/>
+  <path d="M160,50 C202,50 226,86 226,126 C226,166 197,200 160,210 C123,200 94,166 94,126 C94,86 118,50 160,50 Z" fill="url(#bossGrad)" stroke="#ce93d8" stroke-width="3"/>
+  <g fill="#4a148c">
+    <path d="M96,120 L72,108 L92,142 Z"/><path d="M224,120 L248,108 L228,142 Z"/>
+  </g>
+  <polygon points="160,66 172,84 160,100 148,84" fill="#ef5350" stroke="#ffcdd2" stroke-width="2"/>
+  <g>
+    <polygon points="124,110 156,101 153,119 127,124" fill="#ffee58"/>
+    <polygon points="196,110 164,101 167,119 193,124" fill="#ffee58"/>
+    <rect x="140" y="106" width="5" height="15" fill="#000" transform="rotate(8 142 113)"/>
+    <rect x="175" y="106" width="5" height="15" fill="#000" transform="rotate(-8 178 113)"/>
+  </g>
+  <path d="M118,100 L156,92 L164,92 L202,100 L200,110 L162,102 L158,102 L120,110 Z" fill="#38006b"/>
+  <ellipse cx="146" cy="166" rx="5" ry="3.4" fill="#2a0050"/>
+  <ellipse cx="174" cy="166" rx="5" ry="3.4" fill="#2a0050"/>
+  <path d="M116,178 C134,200 186,200 204,178 L196,196 C178,212 142,212 124,196 Z" fill="#2a0050"/>
+  <g fill="#fff">
+    <polygon points="128,180 136,180 132,194"/><polygon points="150,184 158,184 154,198"/>
+    <polygon points="164,184 172,184 168,198"/><polygon points="186,180 194,180 190,194"/>
+  </g>
+  <path d="M146,196 C154,188 166,188 174,196 C166,202 154,202 146,196 Z" fill="#c62828"/>
+  <g stroke="#b39ddb" stroke-width="3" fill="none" opacity=".45" stroke-linecap="round">
+    <path d="M138,158 C128,148 130,138 124,130"/><path d="M182,158 C192,148 190,138 196,130"/>
+  </g>
+</svg></div></div>
+    <div class="dqwin" id="bossInfo">
+      <div id="bwNameRow"><span id="bwName">魔王ノーセンス</span><span id="bwTurn"></span></div>
+      <div class="pw-line"><span>H</span><b id="bwHp"></b></div>
+      <div class="dq-bar"><div id="bwHpFill"></div></div>
+    </div>
+    <div class="dqwin" id="msgWin"></div>
+    <div class="dqwin" id="cmdWin" style="display:none;"><div id="cmdList"></div></div>
+  </div>
+  <button class="btn blue" id="btnBossShare" style="display:none;margin-top:12px;">𝕏 魔王討伐をシェア</button>
+  <button class="btn" id="btnBossEnd" style="display:none;margin-top:12px;">結果に戻る</button>
+</section>
+
+</div>
+<div id="manifestOverlay">
+  <div id="manifestText"></div>
+  <div id="manifestBtns" style="display:none;">
+    <button class="btn" id="btnManifestGo">挑む</button>
+    <button class="btn sub" id="btnManifestWait">まだ挑まない</button>
+  </div>
+</div>
+<div id="toast"></div>
+
+<script>
+"use strict";
+const $ = id => document.getElementById(id);
+const clamp = (v,a,b)=>Math.max(a,Math.min(b,v));
+const rand = (a,b)=>a+Math.random()*(b-a);
+const randi = (a,b)=>Math.floor(rand(a,b+1));
+const pick = arr => arr[Math.floor(Math.random()*arr.length)];
+function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); const t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
+function show(id){ document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active")); $(id).classList.add("active"); window.scrollTo(0,0); }
+
+/* ---------- audio ---------- */
+let AC = null;
+function ac(){ if(!AC){ try{ AC = new (window.AudioContext||window.webkitAudioContext)(); }catch(e){} } if(AC && AC.state==="suspended") AC.resume(); return AC; }
+function beep(freq, dur, delay, type, vol){
+  const c = ac(); if(!c) return;
+  const t = c.currentTime + (delay||0);
+  const o = c.createOscillator(), g = c.createGain();
+  o.type = type || "sine"; o.frequency.value = freq;
+  g.gain.setValueAtTime(vol||0.15, t);
+  g.gain.exponentialRampToValueAtTime(0.001, t + (dur||0.12));
+  o.connect(g); g.connect(c.destination);
+  o.start(t); o.stop(t + (dur||0.12) + 0.02);
+}
+function jingle(good){ if(good){ beep(880,.12,0); beep(1320,.18,.1); } else { beep(220,.15,0); beep(160,.2,.12); } }
+
+/* ---------- data ---------- */
+const PARAMS = [
+  { key:"reflex",  name:"反射" },
+  { key:"rhythm",  name:"リズム" },
+  { key:"memory",  name:"記憶" },
+  { key:"color",   name:"色彩" },
+  { key:"observe", name:"観察" },
+  { key:"verbal",  name:"言語" },
+  { key:"spatial", name:"空間" },
+  { key:"art",     name:"絵心" },
+  { key:"pattern", name:"パターン" },
+  { key:"calc",    name:"計算" },
+  { key:"focus",   name:"集中" },
+  { key:"intuition", name:"直感" },
+  { key:"time",    name:"時間感覚" },
+  { key:"tap",     name:"連打" },
+  { key:"nerve",   name:"度胸" }
+];
+const PARAM_NAME = {}; PARAMS.forEach(p=>PARAM_NAME[p.key]=p.name);
+const SKILLS = { reflex:"《電光石火》", rhythm:"《絶対リズム》", memory:"《完全記憶》", color:"《4Kの眼》", observe:"《鷹の目》", verbal:"《言霊使い》", spatial:"《空間把握》", art:"《神の筆致》", pattern:"《法則看破》", calc:"《高速演算》", focus:"《干渉無効》", intuition:"《野生の勘》", time:"《体内時計》", tap:"《連打拳》", nerve:"《不動心》" };
+const JOBS = { reflex:"プロゲーマー", rhythm:"音楽家", memory:"学者", color:"デザイナー", observe:"探偵", verbal:"作家", spatial:"建築家", art:"画家", pattern:"暗号解読者", calc:"会計士", focus:"棋士", intuition:"ギャンブラー", time:"指揮者" };
+const TITLES_SINGLE = {
+  rhythm:  { S:"天界の楽団長", A:"吟遊詩人に愛されし者", B:"酒場の人気者" },
+  reflex:  { S:"神速の右手", A:"疾風の使い手", B:"俊足の旅人" },
+  memory:  { S:"歩く大図書館", A:"忘却せぬ賢者の弟子", B:"物覚えの良い旅人" },
+  color:   { S:"万色を見分ける瞳", A:"色彩の魔術師", B:"都で噂の色使い" },
+  observe: { S:"千里眼の持ち主", A:"変化を見逃さぬ番人", B:"目ざとい見張り" },
+  verbal:  { S:"言霊の継承者", A:"言葉の魔術師", B:"言葉遊びの王" },
+  spatial: { S:"生ける地図", A:"転移魔法の適格者", B:"積み荷の申し子" },
+  art:     { S:"神の筆を継ぐ者", A:"宮廷画家の卵", B:"壁画の落書き職人" },
+  pattern: { S:"法則を解く予言者", A:"法則の狩人", B:"法則に気づく者" },
+  calc:    { S:"算術の賢者", A:"暗算の術者", B:"計算の早い商人" },
+  focus:   { S:"無心の境地に立つ者", A:"静寂を纏う者", B:"ここぞで燃える者" },
+  intuition:{ S:"獣の勘を宿す者", A:"勘に生きる者", B:"なんとなく当たる者" },
+  time:    { S:"時を刻む者", A:"時計塔の番人", B:"約束を守る旅人" },
+  tap:     { S:"千手の連撃者", A:"連打の達人", B:"連打の見習い" },
+  nerve:   { S:"鋼の心臓を持つ者", A:"肝の据わりし者", B:"度胸試しの新入り" }
+};
+const TITLES_COMBO = [
+  { pair:["rhythm","reflex"],  title:"音と速さの申し子" },
+  { pair:["observe","memory"], title:"全てを見通す監視者" },
+  { pair:["color","observe"],  title:"偽りを見抜く瞳" },
+  { pair:["reflex","observe"], title:"百発百中の狙撃者" },
+  { pair:["memory","verbal"],  title:"生きる大辞典" },
+  { pair:["art","color"],      title:"天才宮廷画家" },
+  { pair:["pattern","calc"],   title:"理の申し子" },
+  { pair:["focus","reflex"],   title:"超集中の達人" },
+  { pair:["intuition","pattern"], title:"天啓を受ける者" },
+  { pair:["time","rhythm"],    title:"歩く時計仕掛け" },
+  { pair:["tap","reflex"],     title:"電光石火の拳" },
+  { pair:["nerve","intuition"], title:"大博打の勝負師" }
+];
+function rankOf(score){ return score>=90?"S":score>=75?"A":score>=60?"B":score>=40?"C":"D"; }
+function judgeTitle(P){
+  const vals = PARAMS.map(p=>P[p.key]);
+  const max = Math.max.apply(null, vals), min = Math.min.apply(null, vals);
+  if (min>=80) return "転生チートの持ち主";
+  if (max<40) return "未覚醒の転生者";
+  for (const c of TITLES_COMBO){
+    if (P[c.pair[0]]>=75 && P[c.pair[1]]>=75) return c.title;
+  }
+  if (max-min>=60) return "一芸に狂う求道者";
+  if (min>=60 && max<=82) return "万能にして無冠の者";
+  let topKey = PARAMS[0].key;
+  PARAMS.forEach(p=>{ if (P[p.key]>P[topKey]) topKey=p.key; });
+  const r = rankOf(P[topKey]);
+  if (r==="S"||r==="A"||r==="B") return TITLES_SINGLE[topKey][r];
+  return "いずれ目覚める原石";
+}
+
+/* ---------- isekai job judgment (weighted combinations) ---------- */
+function topKeyOf(P){ let t = PARAMS[0].key; PARAMS.forEach(p=>{ if (P[p.key]>P[t]) t=p.key; }); return t; }
+const JOB_DEFS = [
+  { name:"戦士",     main:"tap",     sub:"focus" },
+  { name:"武闘家",   main:"reflex",  sub:"tap" },
+  { name:"魔法使い", main:"color",   sub:"memory" },
+  { name:"賢者",     main:"memory",  sub:"pattern", sub2:"verbal" },
+  { name:"盗賊",     main:"spatial", sub:"reflex" },
+  { name:"狩人",     main:"observe", sub:"intuition" },
+  { name:"踊り子",   main:"rhythm",  sub:"reflex" },
+  { name:"吟遊詩人", main:"verbal",  sub:"rhythm" },
+  { name:"商人",     main:"calc",    sub:"memory" },
+  { name:"召喚士",   main:"art",     sub:"color" },
+  { name:"予言者",   main:"pattern", sub:"intuition" },
+  { name:"時魔導士", main:"time",    sub:"pattern" },
+  { name:"騎士",     main:"focus",   sub:"observe" },
+  { name:"遊び人",   main:"intuition", sub:"nerve" }
+];
+function jobScore(P, j){
+  let s = P[j.main] + P[j.sub]*0.55, w = 1.55;
+  if (j.sub2){ s += P[j.sub2]*0.35; w = 1.83; } /* 賢者だけ3才能判定で薄まるため、出現率が他ジョブと並ぶよう調整（検証済み） */
+  return s / w;
+}
+function judgeJob(P){
+  const vals = PARAMS.map(p=>P[p.key]);
+  const avg = vals.reduce((a,b)=>a+b,0)/vals.length;
+  const min = Math.min.apply(null, vals);
+  if (avg >= 70 && min >= 50) return { name:"勇者", main: topKeyOf(P), hero:true };
+  if (topKeyOf(P) === "intuition" && avg < 50) return { name:"遊び人", main:"intuition" };
+  let best = JOB_DEFS[0], bestScore = -1;
+  JOB_DEFS.forEach(j=>{ const s = jobScore(P, j); if (s > bestScore){ bestScore = s; best = j; } });
+  return { name: best.name, main: best.main };
+}
+
+/* ---------- state ---------- */
+const S = { name:"", scores:{}, details:{}, idx:0 };
+let timers = [];
+function T(fn, ms){ const id = setTimeout(fn, ms); timers.push(id); return id; }
+function clearTimers(){ timers.forEach(clearTimeout); timers = []; }
+function toast(text, ms){
+  const t = $("toast"); t.textContent = text; t.classList.add("show");
+  setTimeout(()=>t.classList.remove("show"), ms||900);
+}
+function judgeToast(ok){ toast(ok ? "⭕ 正解！" : "❌ 不正解", 650); }
+function setTimebar(ratio){
+  const w = $("timebarWrap");
+  if (ratio === null){ w.style.display = "none"; return; }
+  w.style.display = "block";
+  $("timebarFill").style.width = Math.max(0, ratio*100) + "%";
+}
+</script>
+<script>
+"use strict";
+/* ================= GAMES ================= */
+/* Each game: { id, cat, title, instr, run(stage, done) } — done(score0to100, detailText) */
+
+/* ---- 1. reflex ---- */
+function gameReflex(stage, done){
+  let round = 0, times = [], state = "ready", t0 = 0, fouls = 0;
+  const pad = document.createElement("div");
+  pad.className = "pad"; pad.textContent = "タップでスタート（全3回）";
+  stage.appendChild(pad);
+  function arm(){
+    state = "wait"; pad.className = "pad wait"; pad.textContent = "待て…（緑になったらタップ）";
+    T(()=>{ state = "go"; t0 = performance.now(); pad.className = "pad go"; pad.textContent = "タップ！";
+      /* 実際に画面へ描画されるフレームの時刻を起点にして、表示ラグを計測から外す */
+      requestAnimationFrame(ts=>{ t0 = ts; });
+    }, rand(1100, 3200));
+  }
+  pad.onpointerdown = (e)=>{
+    if (state === "ready"){ arm(); }
+    else if (state === "wait"){
+      fouls++;
+      if (fouls >= 2){ times.push(520); next(); }
+      else { pad.className = "pad"; pad.textContent = "フライング！もう一度タップで待機"; state = "ready"; beep(180,.15); }
+    }
+    else if (state === "go"){
+      /* イベント発火時刻（タッチが登録された時刻）で測り、処理遅延を入れない */
+      const t = (e && e.timeStamp) ? e.timeStamp : performance.now();
+      let rt = Math.round(t - t0);
+      if (rt < 0 || rt > 2000) rt = Math.round(performance.now() - t0);
+      times.push(rt); beep(990,.08);
+      next();
+    }
+  };
+  function next(){
+    round++;
+    if (round >= 3){
+      const avg = Math.round(times.reduce((a,b)=>a+b,0)/times.length);
+      const score = clamp(Math.round(150 - avg*0.32), 5, 100);
+      pad.className = "pad done"; pad.textContent = "平均 " + avg + "ms";
+      T(()=>done(score, "反応速度 平均" + avg + "ms"), 700);
+    } else {
+      state = "ready"; pad.className = "pad";
+      pad.textContent = times[times.length-1] + "ms！ タップで次へ（" + (round+1) + "回目）";
+    }
+  }
+}
+
+/* ---- 2. rhythm reproduction (latency-proof: compares intervals, not absolute timing) ---- */
+function gameRhythm(stage, done){
+  const dot = document.createElement("div"); dot.className = "beat-dot"; dot.textContent = "聞いて";
+  const info = document.createElement("div");
+  info.style.textAlign = "center"; info.style.fontSize = "15px"; info.style.minHeight = "24px"; info.style.marginTop = "6px";
+  const btn = document.createElement("button"); btn.className = "btn blue"; btn.textContent = "タップで再現";
+  stage.appendChild(dot); stage.appendChild(info); stage.appendChild(btn);
+  const POOLS = [
+    [[1,1,1,1],[1,1,2],[2,1,1]],
+    [[1,2,1,1],[1,1,1,2],[1,2,2,1]],
+    [[1,1,2,1,1],[1,2,1,2,1],[2,1,1,1,2],[1,2,2,1,1]]
+  ];
+  const BASES = [400, 370, 330];
+  let round = 0, scores = [], errs = [], taps = [], phase = "idle", curPat = null;
+  function playRound(){
+    round++;
+    const pat = { units: pick(POOLS[round-1]), base: BASES[round-1] + randi(-20, 20) };
+    curPat = pat;
+    const tapsNeeded = pat.units.length + 1;
+    taps = []; phase = "play";
+    info.textContent = "第" + round + "問：リズムを聞いて…";
+    let at = 500;
+    for (let i = 0; i < tapsNeeded; i++){
+      T(()=>{ dot.classList.add("on"); beep(880,.07,0,"square",.10); setTimeout(()=>dot.classList.remove("on"), 120); }, at);
+      if (i < pat.units.length) at += pat.units[i]*pat.base;
+    }
+    T(()=>{ phase = "input"; info.textContent = "あなたの番！同じ間隔で " + tapsNeeded + " 回タップ"; }, at + 450);
+  }
+  btn.onpointerdown = ()=>{
+    if (phase !== "input") return;
+    taps.push(performance.now()); beep(440,.05,0,"sine",.07);
+    const pat = curPat;
+    const tapsNeeded = pat.units.length + 1;
+    if (taps.length < tapsNeeded){ info.textContent = "あと " + (tapsNeeded - taps.length) + " 回"; return; }
+    phase = "judge";
+    const target = pat.units.map(u=>u*pat.base);
+    const mine = []; for (let i = 1; i < taps.length; i++) mine.push(taps[i]-taps[i-1]);
+    const tTot = target.reduce((a,b)=>a+b,0), mTot = mine.reduce((a,b)=>a+b,0);
+    const scale = mTot/tTot;
+    let err = 0; target.forEach((t,i)=>{ err += Math.abs(mine[i]/scale - t)/t; });
+    err = err/target.length;
+    errs.push(err);
+    scores.push(clamp(Math.round(102 - err*190), 5, 100));
+    info.textContent = (err < 0.18 ? "⭕ よく合ってる！" : "❌ ズレてる…") + " 間隔の誤差 " + Math.round(err*100) + "%";
+    if (err < 0.18) jingle(true); else jingle(false);
+    T(()=>{ if (round >= 3){
+        const avg = Math.round(scores.reduce((a,b)=>a+b,0)/scores.length);
+        const avgErr = Math.round(errs.reduce((a,b)=>a+b,0)/errs.length*100);
+        done(avg, "リズム再現の平均誤差 " + avgErr + "%");
+      } else playRound(); }, 850);
+  };
+  playRound();
+}
+
+/* ---- 4. flash memory ---- */
+function gameFlash(stage, done){
+  const grid = document.createElement("div"); grid.className = "grid";
+  grid.style.gridTemplateColumns = "repeat(5, 52px)"; grid.style.justifyContent = "center";
+  const cells = [];
+  for (let i = 0; i < 25; i++){ const c = document.createElement("div"); c.className = "cell"; grid.appendChild(c); cells.push(c); }
+  const btn = document.createElement("button"); btn.className = "btn"; btn.textContent = "決定"; btn.style.display = "none";
+  stage.appendChild(grid); stage.appendChild(btn);
+  let round = 0, litSet = [], selected = new Set(), ratios = [], phase = "show";
+  function startRound(){
+    round++;
+    const litCount = [7,10,13][round-1];
+    litSet = shuffle([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24]).slice(0, litCount);
+    selected = new Set(); phase = "show";
+    cells.forEach((c,i)=>{ c.className = "cell" + (litSet.indexOf(i)>=0 ? " lit" : ""); c.onclick = null; });
+    btn.style.display = "none";
+    T(()=>{
+      cells.forEach(c=>c.classList.remove("lit"));
+      phase = "input";
+      cells.forEach((c,i)=>{ c.onclick = ()=>{ if (phase!=="input") return;
+        if (selected.has(i)){ selected.delete(i); c.classList.remove("sel"); }
+        else { selected.add(i); c.classList.add("sel"); beep(700,.04,0,"sine",.06); } }; });
+      btn.style.display = "block";
+    }, [1100, 1000, 900][round-1]);
+  }
+  btn.onclick = ()=>{
+    if (phase !== "input") return; phase = "judge";
+    let hit = 0; selected.forEach(i=>{ if (litSet.indexOf(i)>=0) hit++; });
+    const ratio = Math.max(0, (hit - (selected.size - hit)*0.35)) / litSet.length;
+    ratios.push(ratio);
+    cells.forEach((c,i)=>{ if (litSet.indexOf(i)>=0) c.classList.add("lit"); });
+    if (hit === litSet.length && selected.size === litSet.length){ jingle(true); toast("⭕ 完璧！全マス一致", 700); }
+    else { jingle(false); toast("❌ " + hit + "/" + litSet.length + " マス一致（光ったマスが正解）", 700); }
+    T(()=>{ if (round >= 3){ const avg = ratios.reduce((a,b)=>a+b,0)/ratios.length;
+      done(clamp(Math.round(avg*100), 5, 100), "配置の再現率 " + Math.round(avg*100) + "%");
+    } else startRound(); }, 800);
+  };
+  startRound();
+}
+
+/* ---- 5. color ---- */
+function gameColor(stage, done){
+  const grid = document.createElement("div"); grid.className = "grid";
+  stage.appendChild(grid);
+  let finds = 0, over = false, remain = 20000, lastTick = performance.now();
+  function render(){
+    const n = finds >= 5 ? 5 : 4;
+    grid.style.gridTemplateColumns = "repeat(" + n + ", 1fr)";
+    grid.innerHTML = "";
+    const hue = randi(0, 359), delta = Math.max(1, 8 - Math.floor(finds*0.9));
+    const odd = randi(0, n*n - 1);
+    for (let i = 0; i < n*n; i++){
+      const c = document.createElement("div"); c.className = "cell";
+      const light = i === odd ? 42 + delta : 42;
+      c.style.background = "hsl(" + hue + ", 65%, " + light + "%)";
+      c.style.border = "none";
+      c.onclick = ()=>{ if (over) return;
+        if (i === odd){ finds++; beep(900 + finds*40, .06); render(); }
+        else { c.classList.add("bad"); beep(180,.1); setTimeout(()=>c.classList.remove("bad"), 200); } };
+      grid.appendChild(c);
+    }
+  }
+  function tick(){
+    if (over) return;
+    const now = performance.now(); remain -= (now - lastTick); lastTick = now;
+    setTimebar(remain/20000);
+    if (remain <= 0){ over = true; setTimebar(null);
+      done(clamp(Math.round(finds*8.5), 5, 100), finds + "個の違いを発見"); return; }
+    T(tick, 100);
+  }
+  render(); tick();
+}
+
+/* ---- 6. observe (numbers, progressive grids) ---- */
+function gameObserve(stage, done){
+  const grid = document.createElement("div"); grid.className = "grid";
+  stage.appendChild(grid);
+  let round = 0, correct = 0, speedBonus = 0;
+  function startRound(){
+    round++;
+    const dim = [[2,2],[2,3],[3,3],[3,4]][round-1];
+    const cols = dim[1], total = dim[0]*dim[1];
+    grid.style.gridTemplateColumns = "repeat(" + cols + ", 1fr)";
+    grid.innerHTML = "";
+    const cells = [];
+    for (let i = 0; i < total; i++){ const c = document.createElement("div"); c.className = "cell";
+      c.style.fontSize = total<=6 ? "40px" : total===9 ? "36px" : "32px";
+      c.style.fontWeight = "900"; grid.appendChild(c); cells.push(c); }
+    const items = []; for (let i = 0; i < total; i++) items.push(String(randi(0,9)));
+    const changedIdx = randi(0, total - 1);
+    let replacement = String(randi(0,9));
+    while (replacement === items[changedIdx]) replacement = String(randi(0,9));
+    let phase = "show", shownAt = 0;
+    cells.forEach((c,i)=>{ c.textContent = items[i]; });
+    const showMs = [1000, 1300, 1600, 2000][round-1];
+    T(()=>{ cells.forEach(c=>c.textContent = ""); phase = "blank";
+      T(()=>{ phase = "input"; shownAt = performance.now();
+        cells.forEach((c,i)=>{ c.textContent = i === changedIdx ? replacement : items[i];
+          c.onclick = ()=>{ if (phase !== "input") return; phase = "judge";
+            if (i === changedIdx){ correct++; speedBonus += clamp(Math.round(5 - (performance.now()-shownAt)/900), 0, 3); jingle(true); judgeToast(true); }
+            else { cells[changedIdx].classList.add("lit"); jingle(false); judgeToast(false); }
+            T(()=>{ if (round >= 4) done(clamp(correct*22 + speedBonus, 5, 100), "変化を " + correct + "/4 検出");
+                    else startRound(); }, 750); }; });
+      }, 600);
+    }, showMs);
+  }
+  startRound();
+}
+
+/* ---- 7. anagram (verbal) ---- */
+const ANA_POOLS = [
+  ["さつまいも","たまごやき","すべりだい","かきごおり","かたつむり","ゆきだるま","かぶとむし","ほたるいか","ももたろう"],
+  ["とうもろこし","チョコレート","ハンバーガー","ブロッコリー","ポップコーン","スパゲッティ","カレーライス","チーズケーキ","サンドイッチ","バーベキュー"],
+  ["アイスクリーム","オレンジジュース","グレープフルーツ","カスタードプリン","ショートケーキ","とんこつラーメン","しょうゆラーメン"]
+];
+function gameAnagram(stage, done){
+  const built = document.createElement("div"); built.id = "builtWord";
+  const tiles = document.createElement("div"); tiles.className = "tiles";
+  stage.appendChild(built); stage.appendChild(tiles);
+  let round = 0, mistakes = 0; const startAt = performance.now();
+  let word = "", progress = 0;
+  function startRound(){
+    round++;
+    word = pick(ANA_POOLS[round-1]); progress = 0; built.textContent = "";
+    tiles.innerHTML = "";
+    shuffle(word.split("")).forEach(ch=>{
+      const t = document.createElement("div"); t.className = "tile"; t.textContent = ch;
+      t.onclick = ()=>{
+        if (t.classList.contains("used")) return;
+        if (ch === word[progress]){ t.classList.add("used"); progress++; built.textContent = word.slice(0, progress); beep(760,.05,0,"sine",.07);
+          if (progress >= word.length){ jingle(true);
+            T(()=>{ if (round >= 3){ const sec = (performance.now()-startAt)/1000;
+              done(clamp(Math.round(100 - sec*1.1 - mistakes*6), 5, 100), "並べ替え " + Math.round(sec) + "秒・ミス" + mistakes);
+            } else startRound(); }, 600); }
+        } else { mistakes++; beep(180,.1); }
+      };
+      tiles.appendChild(t);
+    });
+  }
+  startRound();
+}
+
+/* ---- 8. spatial ---- */
+function rot90(p){ const r = []; for (let i = 0; i < 9; i++){ const x = i%3, y = Math.floor(i/3); r[x*3 + (2-y)] = p[i]; } return r; }
+function mirrorH(p){ const r = []; for (let i = 0; i < 9; i++){ const x = i%3, y = Math.floor(i/3); r[y*3 + (2-x)] = p[i]; } return r; }
+function gameSpatial(stage, done){
+  const target = document.createElement("div"); target.className = "grid";
+  target.style.gridTemplateColumns = "repeat(3, 44px)"; target.style.justifyContent = "center";
+  const opts = document.createElement("div"); opts.className = "grid";
+  opts.style.gridTemplateColumns = "repeat(2, 1fr)"; opts.style.marginTop = "14px";
+  stage.appendChild(target); stage.appendChild(opts);
+  let round = 0, correct = 0, speedBonus = 0, busy = false, shownAt = 0;
+  function drawPattern(el, pat, size){
+    el.innerHTML = "";
+    pat.forEach(v=>{ const c = document.createElement("div"); c.className = "cell" + (v ? " lit" : "");
+      c.style.aspectRatio = "1"; if (size) c.style.height = size + "px"; el.appendChild(c); });
+  }
+  function startRound(){
+    round++; busy = false; shownAt = performance.now();
+    let pat = [0,0,0,0,0,0,0,0,0];
+    const fillN = [6,6,7,7][round-1];
+    const idxs = shuffle([0,1,2,3,4,5,6,7,8]).slice(0, fillN);
+    idxs.forEach(i=>pat[i]=1);
+    drawPattern(target, pat);
+    let correctPat = pat; const rotations = randi(1,3);
+    for (let r = 0; r < rotations; r++) correctPat = rot90(correctPat);
+    let distract = [mirrorH(pat), rot90(mirrorH(pat))].filter(d => d.join("") !== correctPat.join(""));
+    while (distract.length < 3){
+      let d = [0,0,0,0,0,0,0,0,0];
+      shuffle([0,1,2,3,4,5,6,7,8]).slice(0, idxs.length).forEach(i=>d[i]=1);
+      const key = d.join("");
+      if (key !== correctPat.join("") && key !== pat.join("") && !distract.some(x=>x.join("")===key)) distract.push(d);
+    }
+    distract = distract.slice(0, 3);
+    const options = shuffle([correctPat].concat(distract));
+    opts.innerHTML = "";
+    const holders = [];
+    options.forEach(p=>{
+      const holder = document.createElement("div"); holder.className = "grid";
+      holder.style.gridTemplateColumns = "repeat(3, 30px)"; holder.style.justifyContent = "center";
+      holder.style.cursor = "pointer"; holder.style.padding = "6px";
+      holder.style.border = "2px solid rgba(159,216,255,.35)"; holder.style.borderRadius = "10px";
+      drawPattern(holder, p, 30);
+      holders.push({ h: holder, ok: p.join("") === correctPat.join("") });
+      holder.onclick = ()=>{ if (busy) return; busy = true;
+        const ok = p.join("") === correctPat.join("");
+        if (ok){ correct++; speedBonus += clamp(Math.round(5 - (performance.now()-shownAt)/900), 0, 3); jingle(true); }
+        else jingle(false);
+        holders.forEach(o=>{
+          if (o.ok){ o.h.style.background = "#2e7d32"; o.h.style.borderColor = "#ffd54f"; }
+          else if (o.h === holder) o.h.style.background = "#8e2424";
+        });
+        judgeToast(ok);
+        T(()=>{ if (round >= 4) done(clamp(correct*22 + speedBonus, 5, 100), "回転当て " + correct + "/4 正解");
+                else startRound(); }, 850); };
+      opts.appendChild(holder);
+    });
+  }
+  startRound();
+}
+
+/* ---- 9. digit memory ---- */
+function gameDigit(stage, done){
+  const showEl = document.createElement("div"); showEl.className = "bigshow";
+  const typed = document.createElement("div"); typed.id = "typedNum";
+  const pad = document.createElement("div"); pad.className = "keypad";
+  stage.appendChild(showEl); stage.appendChild(typed); stage.appendChild(pad);
+  const lens = [6,7,9]; let round = 0, points = 0, maxExact = 0, current = "", input = "", phase = "show";
+  ["1","2","3","4","5","6","7","8","9","⌫","0","OK"].forEach(k=>{
+    const b = document.createElement("div"); b.className = "key"; b.textContent = k;
+    b.onclick = ()=>{ if (phase !== "input") return;
+      if (k === "⌫"){ input = input.slice(0,-1); }
+      else if (k === "OK"){ judge(); return; }
+      else if (input.length < current.length){ input += k; beep(700,.04,0,"sine",.05); }
+      typed.textContent = input; };
+    pad.appendChild(b);
+  });
+  function startRound(){
+    round++;
+    const len = lens[round-1]; current = ""; input = ""; typed.textContent = "";
+    for (let i = 0; i < len; i++) current += String(randi(0,9));
+    phase = "show"; showEl.textContent = current;
+    T(()=>{ showEl.textContent = "？"; phase = "input"; }, 450 + len*200);
+  }
+  function judge(){
+    phase = "judge";
+    let prefix = 0; while (prefix < current.length && input[prefix] === current[prefix]) prefix++;
+    if (input === current){ points += [34,33,33][round-1]; maxExact = current.length; jingle(true); showEl.textContent = "正解！"; }
+    else { points += Math.round(prefix/current.length * 22); jingle(false); showEl.textContent = current; }
+    T(()=>{ if (round >= 3) done(clamp(points, 5, 100), "最大 " + maxExact + " 桁を完全再現");
+            else startRound(); }, 850);
+  }
+  startRound();
+}
+
+/* ---- 11. tracing (art) ---- */
+function gameTrace(stage, done){
+  const cv = document.createElement("canvas");
+  cv.width = 340; cv.height = 260;
+  cv.style.display = "block"; cv.style.margin = "0 auto"; cv.style.background = "rgba(255,255,255,.05)";
+  cv.style.border = "2px solid rgba(159,216,255,.4)"; cv.style.borderRadius = "10px"; cv.style.touchAction = "none";
+  const btn = document.createElement("button"); btn.className = "btn"; btn.textContent = "決定";
+  stage.appendChild(cv); stage.appendChild(btn);
+  const ctx = cv.getContext("2d");
+  function genZigzag(){ const pts = []; [26,88,150,212,274,314].forEach(x=>pts.push([x, Math.round(rand(56,204))])); return pts; }
+  function genSpiral(){ const pts = []; const cx = 170, cy = 130;
+    for (let a = 0; a <= Math.PI*4.6; a += 0.22){ const r = 8 + a*9.2; pts.push([cx + Math.cos(a)*r, cy + Math.sin(a)*r*0.82]); } return pts; }
+  function genWave(){ const pts = []; for (let x = 20; x <= 320; x += 10) pts.push([x, Math.round(130 + Math.sin(x/38)*72)]); return pts; }
+  function genLoop(){ const pts = []; for (let a = 0; a <= Math.PI*3.2; a += 0.25){ const r = 80 - a*4.5; pts.push([170 + Math.cos(a)*r, 130 + Math.sin(a)*r*0.8]); } return pts; }
+  let round = 0, roundScores = [], drawn = [], drawing = false, path = [], dense = [];
+  function densePath(p){ const out = []; for (let i = 1; i < p.length; i++){ const x1 = p[i-1][0], y1 = p[i-1][1], x2 = p[i][0], y2 = p[i][1];
+      const d = Math.hypot(x2-x1, y2-y1), steps = Math.max(1, Math.round(d/6));
+      for (let s = 0; s < steps; s++) out.push([x1 + (x2-x1)*s/steps, y1 + (y2-y1)*s/steps]); }
+    out.push(p[p.length-1]); return out; }
+  function redraw(){
+    ctx.clearRect(0,0,340,260);
+    ctx.strokeStyle = "rgba(110,198,255,.85)"; ctx.lineWidth = 5; ctx.lineJoin = "round"; ctx.beginPath();
+    path.forEach((p,i)=>{ if (i===0) ctx.moveTo(p[0],p[1]); else ctx.lineTo(p[0],p[1]); }); ctx.stroke();
+    if (drawn.length > 1){ ctx.strokeStyle = "#ffd54f"; ctx.lineWidth = 3; ctx.beginPath();
+      drawn.forEach((p,i)=>{ if (i===0) ctx.moveTo(p[0],p[1]); else ctx.lineTo(p[0],p[1]); }); ctx.stroke(); }
+  }
+  function segDist(px,py,x1,y1,x2,y2){ const dx = x2-x1, dy = y2-y1; const L2 = dx*dx + dy*dy || 1;
+    let t = ((px-x1)*dx + (py-y1)*dy)/L2; t = clamp(t,0,1);
+    return Math.hypot(px-(x1+t*dx), py-(y1+t*dy)); }
+  function distToPath(px,py){ let m = 1e9; for (let i = 1; i < path.length; i++){ const d = segDist(px,py,path[i-1][0],path[i-1][1],path[i][0],path[i][1]); if (d < m) m = d; } return m; }
+  function evPos(ev){ if (!ev || typeof ev.offsetX !== "number") return { x:170, y:130 }; return { x:ev.offsetX, y:ev.offsetY }; }
+  cv.onpointerdown = ev => { drawing = true; const p = evPos(ev); drawn.push([p.x,p.y]); redraw(); };
+  cv.onpointermove = ev => { if (!drawing) return; const p = evPos(ev); const last = drawn[drawn.length-1];
+    if (!last || Math.hypot(p.x-last[0], p.y-last[1]) > 3){ drawn.push([p.x,p.y]); redraw(); } };
+  cv.onpointerup = ()=>{ drawing = false; };
+  cv.onpointerleave = ()=>{ drawing = false; };
+  function startRound(){
+    round++; drawn = []; drawing = false;
+    path = round === 1 ? genZigzag() : pick([genSpiral(), genWave(), genLoop()]); dense = densePath(path);
+    redraw();
+  }
+  btn.onclick = ()=>{
+    let score = 5;
+    if (drawn.length > 3){
+      let devSum = 0; drawn.forEach(p=>{ devSum += distToPath(p[0],p[1]); });
+      const avgDev = devSum/drawn.length;
+      let covered = 0;
+      dense.forEach(sp=>{ let m = 1e9; drawn.forEach(dp=>{ const d = Math.hypot(sp[0]-dp[0], sp[1]-dp[1]); if (d < m) m = d; }); if (m <= 12) covered++; });
+      const coverage = covered/dense.length;
+      score = clamp(Math.round(coverage*55 + clamp(50 - avgDev*1.4, 0, 45)), 5, 100);
+    }
+    roundScores.push(score);
+    if (round >= 2){ const avg = Math.round(roundScores.reduce((a,b)=>a+b,0)/roundScores.length);
+      done(avg, "なぞりの到達度と正確さで判定"); }
+    else startRound();
+  };
+  startRound();
+}
+
+/* ---- 12. pattern reading (procedural generators per difficulty tier) ---- */
+function patSeq(terms, ans){ return { seq: terms.join(", ") + ", ?", answer: ans }; }
+const PAT_TIERS = [
+  [ ()=>{ const a = randi(2,9), d = pick([2,3,4,5]); return patSeq([0,1,2,3].map(i=>a+d*i), a+d*4); },
+    ()=>{ const a = pick([1,2,3]), r = pick([2,3]); return patSeq([0,1,2,3].map(i=>a*Math.pow(r,i)), a*Math.pow(r,4)); },
+    ()=>{ const a = randi(11,20), d = pick([3,4,6,7]); return patSeq([0,1,2,3].map(i=>a+d*i), a+d*4); } ],
+  [ ()=>{ const a = randi(1,6); let d = pick([2,3]), t = a; const terms = [t]; for (let i = 0; i < 3; i++){ t += d; terms.push(t); d++; } return patSeq(terms, t + d); },
+    ()=>{ const k = pick([0,1,2]); return patSeq([1,2,3,4].map(n=>(n+k)*(n+k)), (5+k)*(5+k)); },
+    ()=>{ const a = pick([2,3,5]); return patSeq([0,1,2,3].map(i=>a*Math.pow(2,i)), a*16); } ],
+  [ ()=>{ let t = pick([2,3,4]); const terms = [t]; [2,-1,2].forEach(op=>{ t = op === 2 ? t*2 : t-1; terms.push(t); }); return patSeq(terms, t - 1); },
+    ()=>{ let a = pick([1,2]), b = pick([2,3]); const terms = [a,b]; for (let i = 0; i < 3; i++){ const n = a+b; terms.push(n); a = b; b = n; } return patSeq(terms, a + b); },
+    ()=>{ const a = randi(3,8), p = pick([3,4,5]), m = pick([1,2]); let t = a; const terms = [t]; for (let i = 0; i < 3; i++){ t = (i % 2 === 0) ? t + p : t - m; terms.push(t); } return patSeq(terms, t - m); } ],
+  [ ()=>patSeq([1,2,6,24], 120),
+    ()=>{ let t = 3; const terms = [t]; [2,3,4].forEach(m=>{ t *= m; terms.push(t); }); return patSeq(terms, t*5); },
+    ()=>{ const a = pick([3,4]); return patSeq([0,1,2,3].map(i=>a*Math.pow(3,i)), a*81); },
+    ()=>{ let t = pick([2,5]); const terms = [t]; for (let i = 0; i < 3; i++){ t = (i % 2 === 0) ? t*2 : t+3; terms.push(t); } return patSeq(terms, t + 3); } ],
+  [ ()=>{ const primes = [2,3,5,7,11,13,17,19,23,29,31]; const s = randi(0,5); return patSeq(primes.slice(s, s+5), primes[s+5]); },
+    ()=>{ const primes = [2,3,5,7,11,13]; const s = randi(0,1); return patSeq(primes.slice(s, s+4).map(p=>p*p), primes[s+4]*primes[s+4]); },
+    ()=>patSeq([1,1,2,3,5,8], 13),
+    ()=>patSeq([3,5,9,17,33], 65),
+    ()=>patSeq([2,8,26,80], 242) ]
+];
+function gamePattern(stage, done){
+  const showEl = document.createElement("div"); showEl.className = "bigshow";
+  showEl.style.fontSize = "32px"; showEl.style.letterSpacing = ".05em";
+  const choices = document.createElement("div"); choices.className = "choices";
+  stage.appendChild(showEl); stage.appendChild(choices);
+  let round = 0, correct = 0, speedBonus = 0, busy = false, shownAt = 0;
+  function startRound(){
+    round++; busy = false; shownAt = performance.now();
+    const q = pick(PAT_TIERS[round-1])();
+    showEl.textContent = q.seq;
+    const opts = new Set([q.answer]);
+    const tens = shuffle([10,20,30,-10,-20,-30]).map(d=>q.answer + d).filter(v=>v > 0 && v % 10 === q.answer % 10);
+    for (const v of tens){ if (opts.size >= 3) break; opts.add(v); }
+    while (opts.size < 3){ const d = q.answer + pick([-6,-3,-2,-1,1,2,3,6]); if (d > 0) opts.add(d); }
+    choices.innerHTML = "";
+    const btns = [];
+    shuffle(Array.from(opts)).forEach(v=>{
+      const b = document.createElement("button"); b.className = "choice"; b.style.textAlign = "center"; b.textContent = v;
+      btns.push({ b:b, v:v });
+      b.onclick = ()=>{ if (busy) return; busy = true;
+        const ok = v === q.answer;
+        if (ok){ correct++; speedBonus += clamp(Math.round(5 - (performance.now()-shownAt)/1000), 0, 2); jingle(true); }
+        else jingle(false);
+        btns.forEach(o=>{ if (o.v === q.answer){ o.b.style.background = "#2e7d32"; o.b.style.borderColor = "#ffd54f"; }
+                          else if (o.b === b) o.b.style.background = "#8e2424"; });
+        judgeToast(ok);
+        T(()=>{ if (round >= 5) done(clamp(correct*18 + speedBonus, 5, 100), "法則を " + correct + "/5 看破");
+                else startRound(); }, 900); };
+      choices.appendChild(b);
+    });
+  }
+  startRound();
+}
+
+/* ---- 13. mental calculation ---- */
+function gameCalc(stage, done){
+  const showEl = document.createElement("div"); showEl.className = "bigshow"; showEl.style.fontSize = "40px";
+  const choices = document.createElement("div"); choices.className = "choices";
+  stage.appendChild(showEl); stage.appendChild(choices);
+  let round = 0, correct = 0, speedBonus = 0, busy = false, shownAt = 0;
+  function makeQ(r){
+    if (r === 1){ const a = randi(34,68), b = randi(27,59); return { text:a + " + " + b, ans:a+b }; }
+    if (r === 2){ const a = randi(120,240), b = randi(46,98); return { text:a + " − " + b, ans:a-b }; }
+    if (r === 3){ const a = randi(6,9), b = randi(26,58); return { text:a + " × " + b, ans:a*b }; }
+    if (r === 4){ const b = randi(7,13), q = randi(13,24); return { text:(b*q) + " ÷ " + b, ans:q }; }
+    const a = randi(19,34), b = randi(16,24); return { text:a + " × " + b, ans:a*b };
+  }
+  function startRound(){
+    round++; busy = false; shownAt = performance.now();
+    const q = makeQ(round);
+    showEl.textContent = q.text + " = ?";
+    /* 誤答は正解と1の位を揃える（1の位だけでの判別を封じる） */
+    const opts = new Set([q.ans]);
+    const cands = shuffle([10,20,30,40,50,60,100,-10,-20,-30,-40,-50,-60,-100])
+      .map(d=>q.ans + d).filter(v=>v > 0 && v % 10 === q.ans % 10);
+    for (const v of cands){ if (opts.size >= 3) break; opts.add(v); }
+    let f = 1;
+    while (opts.size < 3){ const v = q.ans + pick([-2,-1,1,2]) * f; if (v > 0 && v !== q.ans) opts.add(v); f++; }
+    choices.innerHTML = "";
+    const btns = [];
+    shuffle(Array.from(opts)).forEach(v=>{
+      const b = document.createElement("button"); b.className = "choice"; b.style.textAlign = "center"; b.textContent = v;
+      btns.push({ b:b, v:v });
+      b.onclick = ()=>{ if (busy) return; busy = true;
+        const ok = v === q.ans;
+        if (ok){ correct++; speedBonus += clamp(Math.round(5 - (performance.now()-shownAt)/1100), 0, 2); jingle(true); }
+        else jingle(false);
+        btns.forEach(o=>{ if (o.v === q.ans){ o.b.style.background = "#2e7d32"; o.b.style.borderColor = "#ffd54f"; }
+                          else if (o.b === b) o.b.style.background = "#8e2424"; });
+        judgeToast(ok);
+        T(()=>{ if (round >= 5) done(clamp(correct*18 + speedBonus, 5, 100), "暗算 " + correct + "/5 正解");
+                else startRound(); }, 900); };
+      choices.appendChild(b);
+    });
+  }
+  startRound();
+}
+
+/* ---- 14. stroop test (focus) ---- */
+function gameStroop(stage, done){
+  const COLORS = [ { name:"あか", hex:"#ef5350" }, { name:"あお", hex:"#42a5f5" }, { name:"きいろ", hex:"#ffee58" }, { name:"みどり", hex:"#66bb6a" } ];
+  const word = document.createElement("div"); word.className = "bigshow"; word.style.fontSize = "58px"; word.style.fontWeight = "900";
+  const choices = document.createElement("div"); choices.className = "choices";
+  stage.appendChild(word); stage.appendChild(choices);
+  let qn = 0, correct = 0, speedBonus = 0, answered = false, shownAt = 0, inkIdx = 0, curBtns = [];
+  function startQ(){
+    qn++; answered = false; shownAt = performance.now();
+    inkIdx = randi(0, 3);
+    let wordIdx = inkIdx;
+    if (qn >= 2){ const others = [0,1,2,3].filter(i=>i !== inkIdx); wordIdx = pick(others); }
+    word.textContent = COLORS[wordIdx].name; word.style.color = COLORS[inkIdx].hex;
+    choices.innerHTML = "";
+    curBtns = [];
+    shuffle([0,1,2,3]).forEach(ci=>{
+      const b = document.createElement("button"); b.className = "choice"; b.style.textAlign = "center";
+      b.textContent = COLORS[ci].name; b.style.fontWeight = "900"; b.style.fontSize = "20px";
+      if (qn >= 4) b.style.color = COLORS[randi(0,3)].hex;
+      b.onclick = ()=>answer(ci, b);
+      curBtns.push({ b:b, ci:ci });
+      choices.appendChild(b);
+    });
+    const myQ = qn;
+    T(()=>{ if (!answered && qn === myQ){ answered = true; jingle(false); reveal(null); judgeToast(false); T(next, 900); } }, 4200);
+  }
+  function reveal(picked){
+    curBtns.forEach(o=>{ if (o.ci === inkIdx){ o.b.style.background = "#2e7d32"; o.b.style.borderColor = "#ffd54f"; o.b.style.color = "#fff"; }
+                         else if (o.b === picked) o.b.style.background = "#8e2424"; });
+  }
+  function answer(ci, b){
+    if (answered) return; answered = true;
+    const ok = ci === inkIdx;
+    if (ok){ correct++; speedBonus += clamp(Math.round(5 - (performance.now()-shownAt)/1000), 0, 2); jingle(true); }
+    else jingle(false);
+    reveal(b); judgeToast(ok);
+    T(next, 900);
+  }
+  function next(){
+    if (qn >= 5) done(clamp(correct*18 + speedBonus, 5, 100), "干渉に " + correct + "/5 勝利");
+    else startQ();
+  }
+  startQ();
+}
+
+/* ---- 15. dot numerosity (intuition) ---- */
+function gameDots(stage, done){
+  const wrap = document.createElement("div"); wrap.style.display = "flex"; wrap.style.gap = "10px";
+  const left = document.createElement("div"), right = document.createElement("div");
+  [left, right].forEach(p=>{ p.style.flex = "1"; p.style.position = "relative"; p.style.height = "190px";
+    p.style.background = "#141d38"; p.style.border = "1px solid #31406e"; p.style.borderRadius = "12px"; wrap.appendChild(p); });
+  const msg = document.createElement("div"); msg.className = "instr"; msg.style.marginTop = "12px"; msg.style.textAlign = "center";
+  const btnRow = document.createElement("div"); btnRow.className = "choices"; btnRow.style.display = "none";
+  const bL = document.createElement("button"); bL.className = "choice"; bL.style.textAlign = "center"; bL.textContent = "← 左が多い";
+  const bR = document.createElement("button"); bR.className = "choice"; bR.style.textAlign = "center"; bR.textContent = "右が多い →";
+  btnRow.appendChild(bL); btnRow.appendChild(bR);
+  stage.appendChild(wrap); stage.appendChild(msg); stage.appendChild(btnRow);
+  const RATIOS = [1.5, 1.33, 1.25, 1.15, 1.08];
+  const SHOWMS = [1000, 950, 900, 850, 800];
+  let round = 0, correct = 0, answerSide = null, phase = "show", leftN = 0, rightN = 0;
+  function fillDots(panel, n){
+    panel.innerHTML = "";
+    for (let i = 0; i < n; i++){
+      const d = document.createElement("div");
+      const s = rand(4, 9);
+      d.style.position = "absolute"; d.style.width = s + "px"; d.style.height = s + "px";
+      d.style.borderRadius = "50%"; d.style.background = "#ffd54f";
+      d.style.left = rand(4, 90) + "%"; d.style.top = rand(4, 86) + "%";
+      panel.appendChild(d);
+    }
+  }
+  function startRound(){
+    round++; phase = "show"; btnRow.style.display = "none";
+    const base = randi(16, 26);
+    const more = Math.max(base + 2, Math.round(base * RATIOS[round-1]));
+    const leftMore = Math.random() < .5; answerSide = leftMore ? "L" : "R";
+    leftN = leftMore ? more : base; rightN = leftMore ? base : more;
+    fillDots(left, leftN); fillDots(right, rightN);
+    msg.textContent = "どっちが多い？ よく見て…";
+    T(()=>{ left.innerHTML = ""; right.innerHTML = "";
+      msg.textContent = "どっちが多かった？"; btnRow.style.display = "flex"; phase = "answer"; }, SHOWMS[round-1]);
+  }
+  function answer(side){
+    if (phase !== "answer") return; phase = "fb";
+    const ok = side === answerSide;
+    if (ok){ correct++; jingle(true); } else jingle(false);
+    msg.textContent = (ok ? "⭕ 正解！" : "❌ 不正解") + " 左 " + leftN + "個 ／ 右 " + rightN + "個 でした";
+    T(()=>{ if (round >= 5) done(clamp(correct*20 - (5-correct)*8, 5, 100), "数の差を " + correct + "/5 直感で的中");
+            else startRound(); }, 1000);
+  }
+  bL.onclick = ()=>answer("L"); bR.onclick = ()=>answer("R");
+  startRound();
+}
+
+/* ---- 16. internal clock (time sense) ---- */
+function gameClock(stage, done){
+  const showEl = document.createElement("div"); showEl.className = "bigshow"; showEl.style.fontSize = "44px";
+  const msg = document.createElement("div"); msg.className = "instr"; msg.style.textAlign = "center";
+  const btn = document.createElement("button"); btn.className = "choice";
+  btn.style.display = "block"; btn.style.width = "100%"; btn.style.textAlign = "center";
+  btn.style.fontSize = "22px"; btn.style.fontWeight = "900"; btn.style.marginTop = "14px";
+  stage.appendChild(showEl); stage.appendChild(msg); stage.appendChild(btn);
+  const TARGETS = [5, 10];
+  let round = 0, scores = [], errs = [], startedAt = 0, phase = "ready";
+  function startRound(){
+    round++; phase = "ready";
+    showEl.textContent = "目標 " + TARGETS[round-1] + "秒";
+    msg.textContent = "スタートを押すと計測開始。画面には何も出ません。";
+    btn.textContent = "スタート";
+  }
+  btn.onclick = ()=>{
+    if (phase === "ready"){
+      phase = "run"; startedAt = performance.now();
+      showEl.textContent = "・・・"; msg.textContent = "数えるのは頭の中だけ。たったと思ったらストップ。";
+      btn.textContent = "ストップ";
+    } else if (phase === "run"){
+      phase = "fb";
+      const sec = (performance.now() - startedAt) / 1000;
+      const target = TARGETS[round-1];
+      const rel = Math.abs(sec - target) / target; errs.push(rel);
+      scores.push(clamp(Math.round(100 - rel*300), 0, 100));
+      showEl.textContent = sec.toFixed(1) + "秒";
+      msg.textContent = "目標 " + target + "秒との誤差 " + Math.round(rel*100) + "%";
+      btn.textContent = round >= 2 ? "結果へ" : "次の目標へ";
+    } else if (phase === "fb"){
+      if (round >= 2){
+        const avg = Math.round(scores.reduce((a,b)=>a+b,0) / scores.length);
+        const avgErr = Math.round(errs.reduce((a,b)=>a+b,0) / errs.length * 100);
+        done(clamp(avg, 5, 100), "平均誤差 " + avgErr + "% の体内時計");
+      } else startRound();
+    }
+  };
+  startRound();
+}
+
+/* ---- 17. rapid tap (power) ---- */
+function gameTap(stage, done){
+  const cnt = document.createElement("div"); cnt.className = "bigshow"; cnt.textContent = "0";
+  const pad = document.createElement("div"); pad.className = "pad"; pad.textContent = "タップで開始！";
+  stage.appendChild(cnt); stage.appendChild(pad);
+  let taps = 0, started = false, finished = false, startAt = 0;
+  pad.onpointerdown = ()=>{
+    if (finished) return;
+    if (!started){
+      started = true; startAt = performance.now(); pad.textContent = "連打！ 連打！";
+      const iv = setInterval(()=>{
+        const left = 5000 - (performance.now() - startAt);
+        setTimebar(Math.max(0, left/5000));
+        if (left <= 0){
+          clearInterval(iv); finished = true; setTimebar(null);
+          done(clamp(Math.round(taps*1.9), 5, 100), "5秒で " + taps + " 連打");
+        }
+      }, 50);
+      timers.push(iv);
+    }
+    taps++; cnt.textContent = taps; beep(660,.03,0,"square",.04);
+  };
+}
+
+/* ---- 18. tarai drop (nerve) : dodge at the last moment ---- */
+function gameTarai(stage, done){
+  const W = 340, H = 350;
+  const HEAD_Y = 268, GROUND_Y = 322, TUB_H = 34;
+  const field = document.createElement("div");
+  field.style.position = "relative"; field.style.width = W + "px"; field.style.maxWidth = "100%";
+  field.style.height = H + "px"; field.style.margin = "0 auto";
+  field.style.background = "radial-gradient(ellipse at 50% 0%, rgba(255,213,79,.28), rgba(0,0,0,0) 55%), linear-gradient(#141c3a, #0d1330)";
+  field.style.border = "1px solid #31406e"; field.style.borderRadius = "12px"; field.style.overflow = "hidden";
+  field.style.touchAction = "none"; field.style.userSelect = "none"; field.style.cursor = "pointer";
+  const rope = document.createElement("div");
+  rope.style.position = "absolute"; rope.style.left = "50%"; rope.style.top = "0";
+  rope.style.width = "3px"; rope.style.height = "26px"; rope.style.background = "#c9a86a"; rope.style.transform = "translateX(-50%)";
+  const tub = document.createElement("div");
+  tub.style.position = "absolute"; tub.style.left = "50%"; tub.style.width = "128px"; tub.style.height = TUB_H + "px";
+  tub.style.transform = "translateX(-50%)";
+  tub.style.background = "linear-gradient(#ffe082 0%, #ffca28 45%, #c49000 100%)";
+  tub.style.clipPath = "polygon(0 0, 100% 0, 86% 100%, 14% 100%)";
+  tub.style.borderRadius = "6px";
+  const tubRim = document.createElement("div");
+  tubRim.style.position = "absolute"; tubRim.style.left = "50%"; tubRim.style.width = "136px"; tubRim.style.height = "10px";
+  tubRim.style.transform = "translateX(-50%)"; tubRim.style.background = "#ffe9a8"; tubRim.style.borderRadius = "50%";
+  const shadow = document.createElement("div");
+  shadow.style.position = "absolute"; shadow.style.left = "50%"; shadow.style.bottom = "18px";
+  shadow.style.height = "12px"; shadow.style.background = "rgba(0,0,0,.45)"; shadow.style.borderRadius = "50%";
+  shadow.style.transform = "translateX(-50%)";
+  const person = document.createElement("div");
+  person.style.position = "absolute"; person.style.left = "50%"; person.style.bottom = "24px";
+  person.style.fontSize = "56px"; person.style.transform = "translateX(-50%)"; person.style.transition = "transform .13s ease-out";
+  person.textContent = "🧍";
+  const burst = document.createElement("div");
+  burst.style.position = "absolute"; burst.style.left = "50%"; burst.style.bottom = "8px";
+  burst.style.fontSize = "30px"; burst.style.transform = "translateX(-50%)"; burst.style.display = "none"; burst.textContent = "💥";
+  const distTag = document.createElement("div");
+  distTag.style.position = "absolute"; distTag.style.top = "10px"; distTag.style.left = "0"; distTag.style.right = "0";
+  distTag.style.textAlign = "center"; distTag.style.fontWeight = "900"; distTag.style.fontSize = "20px"; distTag.style.color = "#ffe082";
+  field.appendChild(shadow); field.appendChild(rope); field.appendChild(tub); field.appendChild(tubRim);
+  field.appendChild(person); field.appendChild(burst); field.appendChild(distTag);
+  const msg = document.createElement("div"); msg.className = "instr"; msg.style.textAlign = "center"; msg.style.marginTop = "10px";
+  stage.appendChild(field); stage.appendChild(msg);
+  const DUR = [1180, 1000, 860], START_Y = 26;
+  let round = 0, scores = [], best = 999, phase = "hang", tubY = START_Y, fallStart = 0, iv = null, dodged = false;
+  function setTub(y){
+    tubY = y;
+    tub.style.top = y + "px"; tubRim.style.top = (y - 4) + "px";
+    const p = clamp((y - START_Y) / (HEAD_Y - TUB_H - START_Y), 0, 1);
+    shadow.style.width = (40 + p*110) + "px"; shadow.style.opacity = 0.3 + p*0.5;
+  }
+  function startRound(){
+    round++; phase = "hang"; dodged = false;
+    if (iv) clearInterval(iv);
+    person.textContent = "🧍"; person.style.transform = "translateX(-50%)";
+    burst.style.display = "none"; distTag.textContent = "";
+    rope.style.display = "block"; tub.style.transform = "translateX(-50%)";
+    setTub(START_Y);
+    msg.textContent = "第" + round + "回：たらいが落ちたら、頭に当たるギリギリでタップしてよけろ！";
+    T(()=>{ if (phase === "hang") startFall(); }, rand(800, 1700));
+  }
+  function startFall(){
+    phase = "fall"; rope.style.display = "none"; fallStart = performance.now();
+    const dist = HEAD_Y - TUB_H - START_Y;
+    iv = setInterval(()=>{
+      const f = Math.min(1, (performance.now() - fallStart) / DUR[round-1]);
+      setTub(START_Y + dist * f * f);
+      if (f >= 1){ onHit(); }
+    }, 16);
+    timers.push(iv);
+  }
+  function settle(dropToGround){
+    phase = "settle";
+    if (iv) clearInterval(iv);
+    if (dropToGround){
+      iv = setInterval(()=>{
+        setTub(Math.min(GROUND_Y - TUB_H, tubY + 16));
+        if (tubY >= GROUND_Y - TUB_H){
+          clearInterval(iv); burst.style.display = "block"; jingle(false);
+          tub.style.transform = "translateX(-50%) rotate(-7deg)";
+        }
+      }, 16);
+      timers.push(iv);
+    }
+    T(()=>{
+      if (round >= 3){
+        const avg = Math.round(scores.reduce((a,b)=>a+b,0)/scores.length);
+        done(clamp(avg, 5, 100), "最接近 " + (best === 999 ? "—" : Math.round(best) + "px") + " で回避");
+      } else startRound();
+    }, 1250);
+  }
+  function onHit(){
+    if (phase !== "fall") return;
+    scores.push(0);
+    person.textContent = "😵"; jingle(false);
+    distTag.textContent = "ドカン！ 直撃 0点";
+    msg.textContent = "頭に当たった…。度胸の代償は大きい。";
+    settle(false);
+  }
+  field.onpointerdown = ()=>{
+    if (phase !== "hang" && phase !== "fall") return;
+    const gap = HEAD_Y - (tubY + TUB_H);
+    dodged = true;
+    const dir = Math.random() < .5 ? -1 : 1;
+    person.style.transform = "translateX(calc(-50% + " + (dir*105) + "px))";
+    if (phase === "hang"){
+      scores.push(5);
+      distTag.textContent = "まだ落ちてない… 5点";
+      msg.textContent = "早すぎ！ たらいはまだ上にある。";
+      phase = "fall"; rope.style.display = "none";
+      settle(true);
+      return;
+    }
+    best = Math.min(best, gap);
+    const s = clamp(Math.round(106 - gap*0.46), 3, 100); scores.push(s);
+    jingle(gap <= 60);
+    distTag.textContent = "頭まで あと " + Math.round(gap) + "px！";
+    msg.textContent = gap <= 12 ? "神回避！ 紙一重だった。" : gap <= 60 ? "際どい！ いい度胸。" : gap <= 130 ? "まあまあの攻め。" : "安全第一すぎる。もっと待てる。";
+    settle(true);
+  };
+  startRound();
+}
+
+/* ================= FLOW ================= */
+const GAMES = [
+  { cat:"reflex",  title:"反射神経テスト", instr:"緑になった瞬間にタップ。3回の平均で測ります。", run:gameReflex },
+  { cat:"tap",     title:"5秒連打", instr:"開始したら5秒間、とにかく連打してください。", run:gameTap,
+    rule:"タップで開始したら、5秒間ひたすら連打してください。回数で測ります。" },
+  { cat:"color",   title:"色彩センサー", instr:"1つだけ明るさが違うタイルをタップ。20秒で何個見つけられる？", run:gameColor,
+    rule:"タイルの中に1つだけ明るさが違うものがあります。見つけてタップしてください。見つけるたびに違いは小さくなります。制限時間は20秒です。" },
+  { cat:"rhythm",  title:"リズム再現", instr:"流れたリズムを、同じ間隔でタップして再現してください。", run:gameRhythm,
+    rule:"短いリズムが流れます。終わったら、同じ「間隔」でボタンをタップして再現してください。全3問、だんだん複雑になります。全体の速さが多少ズレても、間隔の比率が合っていれば大丈夫です。" },
+  { cat:"memory",  title:"フラッシュ記憶", instr:"光ったマスの配置を覚えて、消えたあとに同じマスをタップ。", run:gameFlash,
+    rule:"5×5のマスの一部が光ります。配置を覚えて、消えたあとに同じマスをタップし、「決定」を押してください。全3ラウンド、光るマスは7→10→13個と増えていきます。" },
+  { cat:"observe", title:"変化検出", instr:"数字を覚えたあと、画面が隠れてから1つだけ変わります。変わったマスをタップ。", run:gameObserve,
+    rule:"数字の配置を覚えてください。そのあと一度画面が隠れ、1つだけ数字が変わって再表示されます。変わったマスをタップしてください。マスは4個→6個→9個→12個と増えていきます。全4ステージ。" },
+  { cat:"verbal",  title:"アナグラム", instr:"バラバラの文字を、正しい言葉の順にタップしてください。", run:gameAnagram,
+    rule:"バラバラになった文字を、正しい言葉になる順番にタップしてください。全3問。速さと正確さで測ります。" },
+  { cat:"spatial", title:"回転シルエット", instr:"上の図形を回転させたものはどれ？ 4つの中から選んでください。", run:gameSpatial,
+    rule:"上の図形と同じものを、回転させた4つの選択肢から選んでください。鏡に映したものは不正解です。全4問。" },
+  { cat:"pattern", title:"パターン読み", instr:"数字の並びの法則を見抜いて、次を当ててください。", run:gamePattern,
+    rule:"数字の並びには法則があります。次にくる数字を3つの選択肢から選んでください。全5問、最後はかなり手強いです。" },
+  { cat:"memory",  title:"数字フラッシュ", instr:"一瞬表示される数字を覚えて、キーパッドで入力してください。", run:gameDigit,
+    rule:"数字が一瞬だけ表示されます。覚えて、キーパッドで入力し「OK」を押してください。桁数は6→7→9と増えていきます。" },
+  { cat:"art",     title:"なぞり描き", instr:"線をなぞってください。正確さと到達度で測ります。", run:gameTrace,
+    rule:"表示された線を、指でなぞってください。線から外れず、最後までたどるほど高得点です。全2問、2問目は渦巻き・波・輪のどれかが出ます。" },
+  { cat:"calc",    title:"暗算チャレンジ", instr:"答えを3択から選んでください。速さと正確さで測ります。", run:gameCalc,
+    rule:"計算の答えを3つの選択肢から選んでください。全5問、だんだん難しくなります。速さも見ています。" },
+  { cat:"focus",   title:"ストループテスト", instr:"答えるのは文字の「意味」じゃなく「色」。惑わされずに選んでください。", run:gameStroop,
+    rule:"色の名前が、別の色で表示されます。答えるのは「文字の意味」ではなく「文字の色」です。全5問。後半は選択肢の文字にも色がついて、さらに惑わせてきます。1問4秒以内に答えてください。" },
+  { cat:"intuition", title:"点の数くらべ", instr:"一瞬表示される点の群れ、多い方を直感で当ててください。", run:gameDots,
+    rule:"左右に点の群れが一瞬だけ表示されます。数が多い方を直感で当ててください。全5問、だんだん数の差が際どくなります。" },
+  { cat:"time",    title:"体内時計", instr:"秒数は表示されません。目標の秒数がたったと思ったらストップ。", run:gameClock,
+    rule:"スタートを押すと計測が始まりますが、画面には秒数が表示されません。目標の秒数がたったと思ったらストップを押してください。全2回（5秒・10秒）。" },
+  { cat:"nerve",   title:"たらい落とし", instr:"頭上から金色のたらいが落ちてきます。当たるギリギリでよけてください。", run:gameTarai,
+    rule:"頭上の金色のたらいが、合図で落ちてきます。タップで横によけてください。頭に当たるギリギリまで待つほど高得点。当たったら0点、早くよけすぎても低得点です。全3回、だんだん速くなります。" }
+];
+const catGames = {};
+function startGame(idx){
+  S.idx = idx;
+  if (idx >= GAMES.length){ finishAll(); return; }
+  clearTimers(); setTimebar(null);
+  const g = GAMES[idx];
+  $("hudProg").textContent = "第" + (idx+1) + "問 / " + GAMES.length;
+  $("hudGame").textContent = PARAM_NAME[g.cat];
+  $("gameTitle").textContent = g.title;
+  $("gameInstr").textContent = g.instr;
+  const stage = $("stage"); stage.innerHTML = "";
+  show("scr-game");
+  const begin = ()=>{
+    stage.innerHTML = "";
+    g.run(stage, (score, detail)=>{
+      clearTimers(); setTimebar(null);
+      if (!catGames[g.cat]) catGames[g.cat] = [];
+      catGames[g.cat].push(score);
+      if (!S.details[g.cat]) S.details[g.cat] = detail;
+      toast(PARAM_NAME[g.cat] + " " + score + "点", 850);
+      beep(1046,.1);
+      setTimeout(()=>startGame(idx+1), 900);
+    });
+  };
+  if (g.rule){
+    const gate = document.createElement("div");
+    gate.className = "pad"; gate.style.fontSize = "17px"; gate.style.fontWeight = "700";
+    gate.innerHTML = '<div>【ルール】<br>' + g.rule + '<br><br><span style="font-size:22px;font-weight:900;color:#ffe082;">▶ タップでスタート</span></div>';
+    gate.onpointerdown = ()=>{ ac(); begin(); };
+    stage.appendChild(gate);
+  } else {
+    begin();
+  }
+}
+function finishAll(){
+  PARAMS.forEach(p=>{
+    const arr = catGames[p.key] || [5];
+    S.scores[p.key] = Math.round(arr.reduce((a,b)=>a+b,0)/arr.length);
+  });
+  renderResult();
+}
+
+/* ================= RESULT ================= */
+function renderResult(){
+  const P = S.scores;
+  const lv = Math.round(PARAMS.reduce((a,p)=>a+P[p.key],0)/PARAMS.length);
+  const title = judgeTitle(P);
+  let topKey = PARAMS[0].key, worstKey = PARAMS[0].key;
+  PARAMS.forEach(p=>{ if (P[p.key]>P[topKey]) topKey=p.key; if (P[p.key]<P[worstKey]) worstKey=p.key; });
+  const second = PARAMS.filter(p=>p.key!==topKey).sort((a,b)=>P[b.key]-P[a.key])[0];
+  $("stTitle").textContent = "『" + title + "』";
+  $("stName").textContent = S.name || "名もなき転生者";
+  $("stLv").textContent = lv;
+  const sp = $("stParams"); sp.innerHTML = "";
+  PARAMS.forEach(p=>{
+    const d = document.createElement("div"); d.className = "st-param";
+    const r = rankOf(P[p.key]);
+    d.innerHTML = PARAM_NAME[p.key] + ' <span class="pv">' + P[p.key] + ' <span class="rank-' + r + '">' + r + '</span></span>' +
+      '<div class="st-bar"><div style="width:' + P[p.key] + '%"></div></div>';
+    sp.appendChild(d);
+  });
+  $("stSkills").textContent = SKILLS[topKey] + "　" + SKILLS[second.key];
+  const job = judgeJob(P); S.jobObj = job;
+  $("stJob").textContent = "【" + job.name + "】";
+  const topDetail = S.details[topKey] ? "（" + S.details[topKey] + "）" : "";
+  $("stComment").textContent = "鑑定：" + PARAM_NAME[topKey] + "が突出しています" + topDetail + "。一方で" + PARAM_NAME[worstKey] + "は" + P[worstKey] + "点。ここは伸びしろとして置いておきましょう。ジョブ判定は【" + job.name + "】です。";
+  show("scr-result");
+  try{
+    const prev = JSON.parse(localStorage.getItem("sainou_best") || "null");
+    if (!prev || lv > prev.lv) localStorage.setItem("sainou_best", JSON.stringify({ lv:lv, title:title }));
+  }catch(e){}
+  S.finalTitle = title; S.finalLv = lv;
+  S.bossResult = null;
+  refreshBossArea();
+}
+$("btnStart").onclick = ()=>{
+  ac();
+  S.name = $("nameInput").value.trim();
+  S.scores = {}; S.details = {}; S.bossResult = null; S.manifestDone = false; S.manifestArmed = false;
+  for (const k in catGames) delete catGames[k];
+  startGame(0);
+};
+$("btnRestart").onclick = ()=>{ show("scr-title"); refreshBest(); };
+
+/* ================= SINGLE MODE ================= */
+function singleBests(){ try { return JSON.parse(localStorage.getItem("sainou_single") || "{}"); } catch(e){ return {}; } }
+function buildSingleList(){
+  const box = $("singleList"); if (!box) return;
+  box.innerHTML = "";
+  const bests = singleBests();
+  GAMES.forEach(g=>{
+    const b = document.createElement("button"); b.className = "sg-btn";
+    const best = bests[g.title];
+    b.innerHTML = '<span class="sg-t">' + g.title + '</span><span class="sg-s">' + PARAM_NAME[g.cat] + (best ? " ／ ベスト " + best + "点" : "") + '</span>';
+    b.onclick = ()=>{ ac(); playSingle(g); };
+    box.appendChild(b);
+  });
+}
+let singleCurrent = null;
+function playSingle(g){
+  singleCurrent = g;
+  clearTimers(); setTimebar(null);
+  $("hudProg").textContent = "単発";
+  $("hudGame").textContent = PARAM_NAME[g.cat];
+  $("gameTitle").textContent = g.title;
+  $("gameInstr").textContent = g.instr;
+  const stage = $("stage"); stage.innerHTML = "";
+  show("scr-game");
+  const begin = ()=>{
+    stage.innerHTML = "";
+    g.run(stage, (score, detail)=>{
+      clearTimers(); setTimebar(null);
+      beep(1046,.1);
+      showSingleResult(g, score, detail);
+    });
+  };
+  if (g.rule){
+    const gate = document.createElement("div");
+    gate.className = "pad"; gate.style.fontSize = "17px"; gate.style.fontWeight = "700";
+    gate.innerHTML = '<div>【ルール】<br>' + g.rule + '<br><br><span style="font-size:22px;font-weight:900;color:#ffe082;">▶ タップでスタート</span></div>';
+    gate.onpointerdown = ()=>{ ac(); begin(); };
+    stage.appendChild(gate);
+  } else begin();
+}
+function rankOf(s){ return s >= 90 ? "S" : s >= 75 ? "A" : s >= 60 ? "B" : s >= 40 ? "C" : "D"; }
+function showSingleResult(g, score, detail){
+  const bests = singleBests();
+  const prev = bests[g.title] || 0;
+  const isRecord = score > prev;
+  if (isRecord){ bests[g.title] = score; try { localStorage.setItem("sainou_single", JSON.stringify(bests)); } catch(e){} }
+  $("sgGame").textContent = g.title;
+  $("sgParam").textContent = "カテゴリ：" + PARAM_NAME[g.cat];
+  $("sgRank").textContent = rankOf(score);
+  $("sgScore").textContent = score + "点";
+  $("sgDetail").textContent = detail || "";
+  $("sgBest").textContent = isRecord ? "🎉 種目ベスト更新！" : "種目ベスト：" + Math.max(prev, score) + "点";
+  buildSingleList();
+  show("scr-single");
+}
+$("btnSgRetry").onclick = ()=>{ if (singleCurrent) playSingle(singleCurrent); };
+$("btnSgFull").onclick = ()=>{ $("btnStart").click(); };
+$("btnSgList").onclick = ()=>{ clearTimers(); show("scr-title"); };
+buildSingleList();
+function refreshBest(){
+  try{
+    const b = JSON.parse(localStorage.getItem("sainou_best") || "null");
+    $("bestBox").textContent = b ? "前回の鑑定：Lv." + b.lv + " 二つ名『" + b.title + "』" : "";
+  }catch(e){ $("bestBox").textContent = ""; }
+}
+refreshBest();
+
+/* ================= BOSS BATTLE (DQ-style party) ================= */
+const BOSS_DEF = { name:"魔王ノーセンス", hp:1050 };
+let bossState = null;
+function refreshBossArea(){
+  const lv = S.finalLv || 0;
+  if (S.bossResult === "win"){
+    $("btnBoss").style.display = "none"; $("bossLock").style.display = "block";
+    $("bossLock").textContent = "👑 魔王は討伐済み。世界は救われた！";
+    S.manifestArmed = false;
+  } else if (lv >= 60 && !S.bossResult && !S.manifestDone){
+    /* 出現演出までは結果画面に何も出さない（タップで発現イベント） */
+    $("btnBoss").style.display = "none"; $("bossLock").style.display = "none";
+    S.manifestArmed = true;
+  } else if (lv >= 60){
+    $("btnBoss").style.display = "block"; $("bossLock").style.display = "block";
+    $("bossLock").textContent = "異世界への入り口は、開かれたまま静かに待っている。";
+    S.manifestArmed = false;
+  } else {
+    $("btnBoss").style.display = "none"; $("bossLock").style.display = "none";
+    S.manifestArmed = false;
+  }
+}
+/* ---------- manifestation event ---------- */
+let manifestTimers = [];
+function startManifest(){
+  const ov = $("manifestOverlay");
+  const box = $("manifestText");
+  box.innerHTML = ""; $("manifestBtns").style.display = "none";
+  ov.classList.add("show");
+  const lines = ["……", "ステータスの奥で、 何かが 目覚めた。", "異世界への入り口が 発現した。", "魔王ノーセンスに 挑む権利が 与えられた。"];
+  manifestTimers.forEach(clearTimeout); manifestTimers = [];
+  lines.forEach((ln, i)=>{
+    manifestTimers.push(setTimeout(()=>{
+      const d = document.createElement("div"); d.className = "mf-line"; d.textContent = ln; box.appendChild(d);
+      beep(392 + i*98, .18, 0, "sine", .05);
+    }, 600 + i*900));
+  });
+  manifestTimers.push(setTimeout(()=>{ $("manifestBtns").style.display = "block"; }, 600 + lines.length*900));
+}
+function endManifest(){
+  manifestTimers.forEach(clearTimeout); manifestTimers = [];
+  $("manifestOverlay").classList.remove("show");
+  S.manifestDone = true; S.manifestArmed = false;
+}
+$("manifestOverlay").addEventListener("pointerdown", ()=>{
+  /* タップで演出をスキップしてボタンまで進める */
+  if ($("manifestBtns").style.display === "none" && $("manifestOverlay").classList.contains("show")){
+    manifestTimers.forEach(clearTimeout); manifestTimers = [];
+    const box = $("manifestText"); box.innerHTML = "";
+    ["……", "ステータスの奥で、 何かが 目覚めた。", "異世界への入り口が 発現した。", "魔王ノーセンスに 挑む権利が 与えられた。"].forEach(ln=>{
+      const d = document.createElement("div"); d.className = "mf-line"; d.textContent = ln; box.appendChild(d);
+    });
+    $("manifestBtns").style.display = "block";
+  }
+});
+$("btnManifestGo").onclick = ()=>{ endManifest(); startBoss(); };
+$("btnManifestWait").onclick = ()=>{ endManifest(); refreshBossArea(); };
+$("scr-result").addEventListener("pointerdown", (e)=>{
+  if (S.manifestArmed){
+    S.manifestArmed = false;
+    e.preventDefault(); e.stopPropagation();
+    startManifest();
+  }
+}, true);
+/* ---------- battle ---------- */
+function bMsg(t){ $("msgWin").textContent = t; }
+function bRender(){
+  const b = bossState; if (!b) return;
+  const row = $("partyRow"); row.innerHTML = "";
+  b.party.forEach(m=>{
+    const w = document.createElement("div");
+    w.className = "dqwin pwin" + (m.isPlayer ? " leader" : "") + (m.hp <= 0 ? " dead" : "");
+    w.innerHTML = '<div class="pw-name">' + m.name + '</div>' +
+      '<div class="pw-line"><span>H</span><b>' + Math.max(0, m.hp) + '</b></div>' +
+      '<div class="dq-bar"><div style="width:' + clamp(m.hp/m.maxhp*100, 0, 100) + '%"></div></div>' +
+      '<div class="pw-line"><span>M</span><b>' + m.mp + '</b></div>' +
+      '<div class="pw-line"><span>LV</span><b>' + m.lv + '</b></div>' +
+      '<div class="pw-job">' + m.jobName + '</div>';
+    row.appendChild(w);
+  });
+  $("bwHp").textContent = Math.max(0, b.bhp);
+  $("bwHpFill").style.width = clamp(b.bhp / BOSS_DEF.hp * 100, 0, 100) + "%";
+  $("bwTurn").textContent = b.turn > 0 ? b.turn + "ターン目" : "";
+}
+function skillDef(key, score){
+  const name = SKILLS[key];
+  switch(key){
+    case "reflex": return { key:key, name:name, cost:6, desc:"2回攻撃", run:(b)=>({ dmg: Math.round(score*0.34)*2, line: name + "！ 目にも止まらぬ 2連撃！" }) };
+    case "memory": return { key:key, name:name, cost:6, desc:"攻撃＋次の敵攻撃を回避", run:(b)=>{ b.evade = true; return { dmg: Math.round(score*0.32), line: name + "！ ボスの動きを 完全記憶した！ 次の攻撃を 見切れる！" }; } };
+    case "time": return { key:key, name:name, cost:5, desc:"時をためる（次の攻撃が2倍）", run:(b)=>{ b.charge = true; return { dmg: 0, line: name + "！ 時を ためた！ 次の攻撃が 2倍になる！" }; } };
+    case "intuition": return { key:key, name:name, cost:5, desc:"当たれば大ダメージ", run:(b)=>{ const lucky = (b.turn % 2 === 0); return { dmg: Math.round(score * (lucky ? 0.95 : 0.25)), line: name + (lucky ? "！ 勘が 冴えわたった！" : "… 勘は 外れた。") }; } };
+    case "nerve": return { key:key, name:name, cost:4, desc:"捨て身の大ダメージ（反動8）", run:(b)=>{ b.party[0].hp -= 8; return { dmg: Math.round(score*0.72), line: name + "！ 捨て身の一撃！ 反動で 8のダメージを 受けた！" }; } };
+    default: return { key:key, name:name, cost:6, desc:"攻撃", run:(b)=>({ dmg: Math.round(score*0.55), line: name + "！" }) };
+  }
+}
+function startBoss(){
+  const P = S.scores;
+  const job = S.jobObj || judgeJob(P);
+  const top3 = PARAMS.slice().sort((a,b2)=>P[b2.key]-P[a.key]).slice(0,3).map(p=>p.key);
+  const playerLv = S.finalLv || 0;
+  const player = { name: S.name || "名もなき転生者", jobName: job.name, isPlayer: true,
+    hp: 60 + playerLv, maxhp: 60 + playerLv, mp: 20, maxmp: 20, lv: playerLv, main: topKeyOf(P), mainScore: P[topKeyOf(P)] };
+  const otherJobs = JOB_DEFS.filter(j=>j.name !== job.name)
+    .map(j=>({ j:j, s: jobScore(P, j) })).sort((a,b2)=>b2.s - a.s).slice(0, 3);
+  const NAMES = ["アベル", "リナ", "ゴウ"];
+  const party = [player].concat(otherJobs.map((o, i)=>{
+    const ms = P[o.j.main];
+    return { name: NAMES[i], jobName: o.j.name, isPlayer: false,
+      hp: 55 + Math.round(ms*0.9), maxhp: 55 + Math.round(ms*0.9),
+      mp: 8 + Math.round(ms/4), maxmp: 8 + Math.round(ms/4),
+      lv: clamp(Math.round(o.s), 5, 99), main: o.j.main, mainScore: ms };
+  }));
+  bossState = { party: party, bhp: BOSS_DEF.hp, turn: 0, over: false, job: job, topKey: topKeyOf(P),
+    skills: top3.map(k=>skillDef(k, P[k])), potions: 2, ethers: 1,
+    charge: false, evade: false, bossCharge: false, guard: false, phase: "cmd" };
+  $("bossSprite").classList.remove("dead");
+  $("btnBossEnd").style.display = "none";
+  $("btnBossShare").style.display = "none";
+  bRender();
+  show("scr-boss");
+  const names = party.slice(1).map(m=>m.name).join("・");
+  bossPhaseCmd(BOSS_DEF.name + "が あらわれた！\n仲間の " + names + " が 駆けつけた！");
+}
+function cmdButton(label, fn, disabled){
+  const b = document.createElement("button"); b.className = "cmd-item"; b.textContent = label;
+  if (disabled) b.disabled = true;
+  b.onclick = fn; return b;
+}
+function bossPhaseCmd(note){
+  const b = bossState; if (!b || b.over) return;
+  b.phase = "cmd";
+  const list = $("cmdList"); list.innerHTML = "";
+  $("cmdWin").style.display = "block";
+  list.appendChild(cmdButton("たたかう", ()=>bossAct({ type:"atk" })));
+  list.appendChild(cmdButton("スキル", ()=>bossPhaseSkill()));
+  list.appendChild(cmdButton("ぼうぎょ", ()=>bossAct({ type:"guard" })));
+  list.appendChild(cmdButton("どうぐ", ()=>bossPhaseItem()));
+  list.appendChild(cmdButton("にげる", ()=>{ show("scr-result"); }));
+  if (note) bMsg(note);
+  bRender();
+}
+function bossPhaseSkill(){
+  const b = bossState; if (!b || b.over) return;
+  b.phase = "skill";
+  const me = b.party[0];
+  const list = $("cmdList"); list.innerHTML = "";
+  b.skills.forEach(sk=>{
+    list.appendChild(cmdButton(sk.name + "（MP" + sk.cost + "）", ()=>{
+      if (me.mp < sk.cost){ bMsg("MPが たりない！"); return; }
+      bossAct({ type:"skill", sk:sk });
+    }, me.mp < sk.cost));
+    const d = document.createElement("div"); d.className = "cmd-note"; d.textContent = PARAM_NAME[sk.key] + "の技：" + sk.desc; list.appendChild(d);
+  });
+  list.appendChild(cmdButton("もどる", ()=>bossPhaseCmd()));
+  bMsg("どのスキルを 使いますか？");
+}
+function bossPhaseItem(){
+  const b = bossState; if (!b || b.over) return;
+  b.phase = "item";
+  const list = $("cmdList"); list.innerHTML = "";
+  list.appendChild(cmdButton("やくそう（残り" + b.potions + "）", ()=>bossAct({ type:"potion" }), b.potions <= 0));
+  list.appendChild(cmdButton("まほうのせいすい（残り" + b.ethers + "）", ()=>bossAct({ type:"ether" }), b.ethers <= 0));
+  list.appendChild(cmdButton("もどる", ()=>bossPhaseCmd()));
+  bMsg("やくそう：味方1人のHPを45回復 ／ せいすい：自分のMPを12回復。使うと1ターン消費します。");
+}
+function companionAct(m, msgs){
+  const b = bossState;
+  if (m.hp <= 0 || b.bhp <= 0) return;
+  const casters = ["賢者", "吟遊詩人", "魔法使い", "召喚士"];
+  const lowest = b.party.filter(x=>x.hp > 0).slice().sort((a,c)=>(a.hp/a.maxhp) - (c.hp/c.maxhp))[0];
+  if (casters.indexOf(m.jobName) >= 0 && m.mp >= 6 && lowest && lowest.hp / lowest.maxhp < 0.38){
+    m.mp -= 6; lowest.hp = Math.min(lowest.maxhp, lowest.hp + 34);
+    msgs.push(m.name + "の 回復魔法！ " + lowest.name + "のHPが 34 回復した！"); return;
+  }
+  if (m.mp >= 5 && b.turn % 3 === 0){
+    m.mp -= 5;
+    const dmg = Math.round(m.mainScore * 0.55); b.bhp -= dmg;
+    msgs.push(m.name + "の " + SKILLS[m.main] + "！ " + BOSS_DEF.name + "に " + dmg + "のダメージ！"); return;
+  }
+  const dmg = Math.round(m.mainScore * 0.32); b.bhp -= dmg;
+  msgs.push(m.name + "の こうげき！ " + BOSS_DEF.name + "に " + dmg + "のダメージ！");
+  m.mp = Math.min(m.maxmp, m.mp + 2);
+}
+function bossAct(act){
+  const b = bossState; if (!b || b.over) return;
+  b.phase = "anim"; $("cmdWin").style.display = "none";
+  b.turn++;
+  const P = S.scores;
+  const me = b.party[0];
+  const msgs = [];
+  let dmg = 0;
+  if (act.type === "atk"){ dmg = Math.round(P[b.topKey]*0.35); msgs.push(me.name + "の こうげき！"); }
+  else if (act.type === "guard"){ b.guard = true; msgs.push(me.name + "は 身を守っている。"); }
+  else if (act.type === "potion"){
+    b.potions--;
+    const lowest = b.party.filter(x=>x.hp > 0).slice().sort((a,c)=>(a.hp/a.maxhp) - (c.hp/c.maxhp))[0];
+    lowest.hp = Math.min(lowest.maxhp, lowest.hp + 45);
+    msgs.push("やくそうを 使った！ " + lowest.name + "のHPが 45 回復した！"); jingle(true);
+  }
+  else if (act.type === "ether"){ b.ethers--; me.mp = Math.min(me.maxmp, me.mp + 12); msgs.push("まほうのせいすいを 使った！ MPが 12 回復した！"); jingle(true); }
+  else if (act.type === "skill"){ me.mp -= act.sk.cost; const r = act.sk.run(b); dmg = r.dmg; msgs.push(r.line); }
+  if (b.charge && dmg > 0){ dmg *= 2; b.charge = false; msgs.push("ためた時が 解き放たれた！ ダメージ2倍！"); }
+  if (dmg > 0){ b.bhp -= dmg; msgs.push(BOSS_DEF.name + "に " + dmg + "のダメージ！"); jingle(true); }
+  bRender();
+  if (b.bhp <= 0){ bossWin(msgs); return; }
+  if (me.hp <= 0){ bossLose(msgs); return; }
+  for (let i = 1; i < b.party.length; i++){
+    companionAct(b.party[i], msgs);
+    if (b.bhp <= 0) break;
+  }
+  bRender();
+  if (b.bhp <= 0){ bossWin(msgs); return; }
+  bMsg(msgs.join("\n"));
+  T(()=>bossStrike(msgs), 1000);
+}
+function bossStrike(prevMsgs){
+  const b = bossState; if (!b || b.over) return;
+  const msgs = prevMsgs.slice();
+  const phase = b.turn % 4;
+  if (phase === 3){
+    b.bossCharge = true;
+    msgs.push(BOSS_DEF.name + "は 力を ためている…！ 次は 大技が 来る！");
+    bMsg(msgs.join("\n")); bRender();
+    T(()=>bossPhaseCmd(), 1000); return;
+  }
+  const alive = b.party.filter(x=>x.hp > 0);
+  if (phase === 0 && b.bossCharge){
+    b.bossCharge = false;
+    msgs.push(BOSS_DEF.name + "の センスバースト！ センスを 吸い取る 大技！");
+    alive.forEach(m=>{
+      let d = 15 + b.turn;
+      if (m.isPlayer && b.evade){ msgs.push("しかし " + m.name + "は 見切って かわした！"); return; }
+      if (m.isPlayer && b.guard) d = Math.ceil(d/2);
+      m.hp -= d;
+      msgs.push(m.name + "に " + d + "のダメージ！");
+    });
+    if (b.evade) b.evade = false;
+    if (b.guard) b.guard = false;
+    jingle(false);
+  } else {
+    const tgt = alive[(b.turn*7) % alive.length];
+    let d = 11 + b.turn;
+    msgs.push(BOSS_DEF.name + "の こうげき！");
+    if (tgt.isPlayer && b.evade){
+      b.evade = false;
+      msgs.push("しかし " + tgt.name + "は 動きを 見切って かわした！"); jingle(true);
+    } else {
+      if (tgt.isPlayer && b.guard){ d = Math.ceil(d/2); b.guard = false; }
+      tgt.hp -= d;
+      msgs.push(tgt.name + "に " + d + "のダメージ！"); jingle(false);
+    }
+  }
+  b.party.forEach(m=>{ if (m.hp <= 0 && !m.dead){ m.dead = true; msgs.push(m.name + "は たおれた！"); } });
+  bRender();
+  if (b.party[0].hp <= 0){ bossLose(msgs); return; }
+  bMsg(msgs.join("\n"));
+  T(()=>bossPhaseCmd(), 1000);
+}
+function bossWin(msgs){
+  const b = bossState; b.over = true; S.bossResult = "win";
+  $("bossSprite").classList.add("dead");
+  bMsg(msgs.concat(["", BOSS_DEF.name + "は たおれた！", b.turn + "ターンで 討伐成功！", "世界に センスが もどった！", "", "― 世界は救われた ―"]).join("\n"));
+  bRender();
+  $("btnBossShare").style.display = "block";
+  $("btnBossEnd").style.display = "block";
+}
+function bossLose(msgs){
+  const b = bossState; b.over = true; S.bossResult = "lose";
+  bMsg(msgs.concat(["", b.party[0].name + "は 力尽きた…", "― しかし 才能は消えない。再鑑定で 力を取り戻し、再び挑もう ―"]).join("\n"));
+  bRender();
+  $("btnBossEnd").style.display = "block";
+}
+$("btnBoss").onclick = ()=>{ ac(); startBoss(); };
+$("btnBossShare").onclick = ()=>{
+  const job = S.jobObj ? S.jobObj.name : "";
+  const text = "『才能探し』で魔王ノーセンスを討伐！⚔️ Lv" + (S.finalLv || 0) + "・【" + job + "】のパーティで世界を救いました。\n#才能探し #魔王討伐\n" + location.href;
+  window.open("https://twitter.com/intent/tweet?text=" + encodeURIComponent(text), "_blank");
+};
+$("btnBossEnd").onclick = ()=>{ show("scr-result"); refreshBossArea(); };
+
+/* ================= SHARE ================= */
+$("btnTweet").onclick = ()=>{
+  const jobName = S.jobObj ? S.jobObj.name : "";
+  const text = "『才能探し』で私のステータスが判明！\nジョブは【" + jobName + "】 Lv." + (S.finalLv||"") + "\n二つ名は『" + (S.finalTitle||"") + "』" + (S.bossResult === "win" ? "。ラスボスも倒して世界を救いました！" : "") + "\nあなたのセンスは何点？ #才能探し";
+  window.open("https://twitter.com/intent/tweet?text=" + encodeURIComponent(text) + "&url=" + encodeURIComponent(location.href), "_blank");
+};
+$("btnSaveImg").onclick = ()=>{
+  const P = S.scores; if (!P || S.finalLv === undefined) return;
+  const cv = document.createElement("canvas"); cv.width = 1200; cv.height = 630;
+  const x = cv.getContext("2d");
+  const grad = x.createLinearGradient(0,0,1200,630);
+  grad.addColorStop(0, "#0a285a"); grad.addColorStop(1, "#08183c");
+  x.fillStyle = grad; x.fillRect(0,0,1200,630);
+  x.strokeStyle = "#6ec6ff"; x.lineWidth = 6; x.strokeRect(18,18,1164,594);
+  x.fillStyle = "#9fd8ff"; x.font = "24px sans-serif"; x.textAlign = "center";
+  x.fillText("― S T A T U S ―", 600, 70);
+  x.fillStyle = "#ffe082"; x.font = "900 54px sans-serif";
+  x.fillText("【" + (S.jobObj ? S.jobObj.name : "") + "】", 600, 140);
+  x.fillStyle = "#ffffff"; x.font = "700 34px sans-serif"; x.textAlign = "left";
+  x.fillText(S.name || "名もなき転生者", 70, 205);
+  x.textAlign = "right"; x.fillStyle = "#9fd8ff"; x.font = "28px sans-serif";
+  x.fillText("Lv. ", 1010, 205);
+  x.fillStyle = "#ffffff"; x.font = "900 44px sans-serif";
+  x.fillText(String(S.finalLv), 1130, 205);
+  x.strokeStyle = "rgba(159,216,255,.4)"; x.lineWidth = 2;
+  x.beginPath(); x.moveTo(70, 225); x.lineTo(1130, 225); x.stroke();
+  x.textAlign = "left";
+  PARAMS.forEach((p,i)=>{
+    const col = i % 3, row = Math.floor(i / 3);
+    const bx = 70 + col*365, by = 262 + row*56;
+    x.fillStyle = "#eaf6ff"; x.font = "24px sans-serif";
+    x.fillText(PARAM_NAME[p.key], bx, by);
+    x.font = "900 26px sans-serif";
+    const r = rankOf(P[p.key]);
+    x.fillStyle = r==="S" ? "#ffd54f" : r==="A" ? "#a5d6a7" : r==="B" ? "#7cc7ff" : r==="C" ? "#b0bec5" : "#ef9a9a";
+    x.fillText(P[p.key] + " " + r, bx + 215, by);
+    x.fillStyle = "rgba(255,255,255,.15)"; x.fillRect(bx, by + 10, 320, 9);
+    x.fillStyle = "#4fc3f7"; x.fillRect(bx, by + 10, 320 * P[p.key] / 100, 9);
+  });
+  x.fillStyle = "#ffe082"; x.font = "900 30px sans-serif"; x.textAlign = "left";
+  x.fillText("二つ名：『" + S.finalTitle + "』", 70, 575);
+  x.fillStyle = "#cfeaff"; x.font = "24px sans-serif"; x.textAlign = "right";
+  x.fillText(S.bossResult === "win" ? "👑 世界を救った！" : "才能探し", 1130, 575);
+  x.textAlign = "left";
+  const a = document.createElement("a");
+  a.download = "talent-status.png"; a.href = cv.toDataURL("image/png"); a.click();
+};
+</script>
+</body>
+</html>
