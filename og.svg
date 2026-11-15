@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="win" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0a285a"/>
+      <stop offset="1" stop-color="#08183c"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="#070d24"/>
+  <rect x="56" y="56" width="1088" height="518" rx="24" fill="url(#win)" stroke="#6ec6ff" stroke-width="6"/>
+  <text x="600" y="176" text-anchor="middle" font-family="'Hiragino Sans','Noto Sans JP',sans-serif" font-size="30" letter-spacing="14" fill="#9fd8ff">― TALENT STATUS ―</text>
+  <text x="600" y="330" text-anchor="middle" font-family="'Hiragino Sans','Noto Sans JP',sans-serif" font-size="148" font-weight="900" letter-spacing="10" fill="#ffe082">才能探し</text>
+  <text x="600" y="420" text-anchor="middle" font-family="'Hiragino Sans','Noto Sans JP',sans-serif" font-size="42" fill="#cfeaff">16のミニゲームで「センス」を実測</text>
+  <text x="600" y="492" text-anchor="middle" font-family="'Hiragino Sans','Noto Sans JP',sans-serif" font-size="34" fill="#9fd8ff">異世界ジョブ × 二つ名で鑑定 ｜ RED FREE GAMES</text>
+</svg>
