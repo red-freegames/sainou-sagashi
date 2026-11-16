@@ -363,7 +363,7 @@
     </div>
   </div>
   <div id="bossArea" style="margin-top:14px;">
-    <button class="btn" id="btnBoss" style="display:none;background:#8e2424;">⚔ ラスボスに挑む</button>
+    <button class="btn" id="btnBoss" style="display:none;background:linear-gradient(180deg,#ff8a65,#ff5722);color:#fff;box-shadow:0 4px 0 #b23c17;text-shadow:0 1px 2px rgba(0,0,0,.35);">⚔ ラスボスに挑む</button>
     <p class="note" id="bossLock" style="display:none;text-align:center;"></p>
   </div>
   <button class="btn blue" id="btnSaveImg">ステータスを画像で保存</button>
@@ -406,7 +406,7 @@
     <ul class="bi-howto"><li><b>1ターンに1コマンド</b>。仲間3人はオートで戦ってくれる。</li><li>魔王が「<b>力をためている</b>」と出たら、次は大技！ <b>ぼうぎょ</b>や回復、停止系の技で備えよう。</li><li>HPが半分を切ると、魔王は<b>1ターンに2回行動</b>する。</li></ul>
     <div class="bt-sec">難易度</div>
     <div class="bi-diff"><button id="biDn" class="on">通常<small>魔王ノーセンス</small></button><button id="biDh">真・魔王<small id="biDhS">クリア後に解放</small></button></div>
-    <button class="btn" id="btnBiGo" style="margin-top:14px;background:#8e2424;">⚔ 出陣する</button>
+    <button class="btn" id="btnBiGo" style="margin-top:14px;background:linear-gradient(180deg,#ff8a65,#ff5722);color:#fff;box-shadow:0 4px 0 #b23c17;text-shadow:0 1px 2px rgba(0,0,0,.35);">⚔ 出陣する</button>
     <button class="btn sub" id="btnBiBack">結果に戻る</button>
   </div>
 </section>
@@ -2137,7 +2137,7 @@ function finishBattle(){
     S.bossResult = "lose";
     ov.className = "show lose";
     ov.innerHTML = '<h2>力尽きた…</h2><div class="st">' + b.turn + 'ターン目に敗北。魔王の残りHP ' + Math.max(0, b.bossHp) + '/' + b.bossMax + '<br>💡 「力をためている」の次は大技！ ぼうぎょで半減、やくそうでHPを保とう。</div>' +
-      '<button class="btn" id="ovRetry" style="background:#8e2424;">⚔ もう一度挑む</button><button class="btn blue" id="ovPlan">作戦会議に戻る</button><button class="btn sub" id="ovBack">結果に戻る</button>';
+      '<button class="btn" id="ovRetry" style="background:linear-gradient(180deg,#ff8a65,#ff5722);color:#fff;box-shadow:0 4px 0 #b23c17;text-shadow:0 1px 2px rgba(0,0,0,.35);">⚔ もう一度挑む</button><button class="btn blue" id="ovPlan">作戦会議に戻る</button><button class="btn sub" id="ovBack">結果に戻る</button>';
     $("ovRetry").onclick = ()=>{ beginBattle(); };
     $("ovPlan").onclick = ()=>{ startBoss(); };
     $("ovBack").onclick = ()=>{ show("scr-result"); refreshBossArea(); };
