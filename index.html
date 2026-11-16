@@ -1704,7 +1704,7 @@ function newBattle(P, job, lv, name, hard){
     mem.max = mem.hp; mem.mpMax = mem.mp; return mem;
   }));
   const b = { hard:!!hard, P:P, job:job, name:me.name, lv:lv, m:m, X:0, party:party, ev:[], turn:1,
-    bossMax:rd(BOSS_DEF.hp*(hard?1.3:1)), phase:1, charge:false, items:4, dealt:0, taken:0, over:null, ultUsed:0, skillKey:topKey,
+    bossMax:rd(BOSS_DEF.hp*(hard?1.56:1)), phase:1, charge:false, items:4, dealt:0, taken:0, over:null, ultUsed:0, skillKey:topKey,
     fx:{ atkT:0, atkV:0, defT:0, defV:0, weakT:0, atkDownT:0, stun:0, silT:0, burnT:0, burnD:0, sumT:0, sumPow:0, sumName:"", counter:false, focus:false, nullT:0 } };
   b.bossHp = b.bossMax;
   b.X = Xof(b, P[topKey]);
@@ -1738,7 +1738,7 @@ function hitMember(b, i, raw, o){
   const m = b.party[i]; if (m.hp <= 0) return 0;
   let d = raw * (0.92 + Math.random()*0.16);
   if (b.fx.atkDownT > 0) d *= 0.75;
-  if (b.hard) d *= 1.12;
+  if (b.hard) d *= 1.344;
   if (b.fx.defT > 0) d *= (1 - b.fx.defV);
   if (m.guard) d *= 0.5;
   d = Math.max(1, rd(d));
@@ -1884,11 +1884,11 @@ function refreshBossArea(){
     $("btnBoss").style.display = "none"; $("bossLock").style.display = "block";
     $("bossLock").textContent = "👑 魔王は討伐済み。世界は救われた！";
     S.manifestArmed = false;
-  } else if (lv >= 60 && !S.bossResult && !S.manifestDone){
+  } else if (lv >= 70 && !S.bossResult && !S.manifestDone){
     /* 出現演出までは結果画面に何も出さない（タップで発現イベント） */
     $("btnBoss").style.display = "none"; $("bossLock").style.display = "none";
     S.manifestArmed = true;
-  } else if (lv >= 60){
+  } else if (lv >= 70){
     $("btnBoss").style.display = "block"; $("bossLock").style.display = "block";
     $("bossLock").textContent = "異世界への入り口は、開かれたまま静かに待っている。";
     S.manifestArmed = false;
@@ -1971,7 +1971,7 @@ function startBoss(){
   const ub = $("biUlt"); ub.innerHTML = '<div class="bi-item"><div class="d"><b>たたかう</b>：魔王を攻撃（' + rd(b0.X) + 'ダメージ前後）<br><b>ぼうぎょ</b>：そのターン受けるダメージ半分＋MP3回復<br><b>どうぐ</b>：やくそう×4（仲間1人を80回復）</div></div>';
   const won = btWon();
   $("biDh").disabled = !won;
-  $("biDhS").textContent = won ? "HP1.3倍・攻撃1.12倍" : "クリア後に解放";
+  $("biDhS").textContent = won ? "HP1.56倍・攻撃1.34倍" : "クリア後に解放";
   if (!won) btHard = false;
   $("biDn").classList.toggle("on", !btHard); $("biDh").classList.toggle("on", btHard);
   show("scr-bintro");
