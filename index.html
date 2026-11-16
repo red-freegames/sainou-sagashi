@@ -474,7 +474,7 @@
     <div id="btBanner"></div><div id="btFlash"></div><div id="btCut"><span class="j"></span><span class="n"></span></div>
     <div id="btOver"></div>
   </div>
-  <button class="btn blue" id="btnBossShare" style="display:none;margin-top:12px;">𝕏 魔王討伐をシェア</button>
+  <button class="btn blue" id="btnBossShare" style="display:none;margin-top:12px;">𝕏 完全制覇をシェア</button>
   <button class="btn" id="btnBossEnd" style="display:none;margin-top:12px;">結果に戻る</button>
 </section>
 
@@ -2129,7 +2129,7 @@ function finishBattle(){
     ov.className = "show";
     ov.innerHTML = '<h2>' + (b.hard ? "真・魔王討伐！" : "魔王討伐！") + '</h2><div class="gr">' + gr + '</div><div style="color:#9fd8ff;font-size:12px;">討伐ランク</div>' +
       '<div class="st">' + b.turn + 'ターンで撃破<br>与ダメージ ' + b.dealt + '　受けたダメージ ' + b.taken + '<br>世界に センスが もどった！<br>― 世界は救われた ―</div>' +
-      '<button class="btn blue" id="ovShare">𝕏 魔王討伐をシェア</button>' + (btHard ? "" : '<button class="btn" id="ovHard" style="background:#6a1b9a;">真・魔王に挑む（解放！）</button>') + '<button class="btn sub" id="ovBack">結果に戻る</button>';
+      '<button class="btn blue" id="ovShare">𝕏 完全制覇をシェア</button>' + (btHard ? "" : '<button class="btn" id="ovHard" style="background:#6a1b9a;">真・魔王に挑む（解放！）</button>') + '<button class="btn sub" id="ovBack">結果に戻る</button>';
     $("ovShare").onclick = shareBoss;
     if ($("ovHard")) $("ovHard").onclick = ()=>{ btHard = true; startBoss(); };
     $("ovBack").onclick = ()=>{ show("scr-result"); refreshBossArea(); };
@@ -2146,7 +2146,7 @@ function finishBattle(){
 }
 function shareBoss(){
   const b = bossState, job = S.jobObj ? S.jobObj.name : "";
-  const text = "『才能探し』で" + (b && b.hard ? "真・" : "") + "魔王ノーセンスを討伐！⚔️ Lv" + (S.finalLv || 0) + "・【" + job + "】" + (b && b.grade ? "　討伐ランク" + b.grade + "（" + b.turn + "ターン）" : "") + "\n必殺技は《" + ((ULT[job] || ULT["勇者"]).name) + "》\n#才能探し #魔王討伐\n" + location.href;
+  const text = "『才能探し』を「完全制覇」した。👑\nLv" + (S.finalLv || 0) + "・【" + job + "】　二つ名は『" + (S.finalTitle || "") + "』\nあなたのセンスは何点？\n#才能探し\n" + location.href;
   window.open("https://twitter.com/intent/tweet?text=" + encodeURIComponent(text), "_blank");
 }
 $("btnBossShare").onclick = shareBoss;
@@ -2156,7 +2156,7 @@ $("btnBossEnd").onclick = ()=>{ show("scr-result"); refreshBossArea(); };
 /* ================= SHARE ================= */
 $("btnTweet").onclick = ()=>{
   const jobName = S.jobObj ? S.jobObj.name : "";
-  const text = "『才能探し』で私のステータスが判明！\nジョブは【" + jobName + "】 Lv." + (S.finalLv||"") + "\n二つ名は『" + (S.finalTitle||"") + "』" + (S.bossResult === "win" ? "。ラスボスも倒して世界を救いました！" : "") + "\nあなたのセンスは何点？ #才能探し";
+  const text = "『才能探し』で私のステータスが判明！\nジョブは【" + jobName + "】 Lv." + (S.finalLv||"") + "\n二つ名は『" + (S.finalTitle||"") + "』" + (S.bossResult === "win" ? "。さらに「完全制覇」しました！" : "") + "\nあなたのセンスは何点？ #才能探し";
   window.open("https://twitter.com/intent/tweet?text=" + encodeURIComponent(text) + "&url=" + encodeURIComponent(location.href), "_blank");
 };
 $("btnSaveImg").onclick = ()=>{
@@ -2195,7 +2195,7 @@ $("btnSaveImg").onclick = ()=>{
   x.fillStyle = "#ffe082"; x.font = "900 30px sans-serif"; x.textAlign = "left";
   x.fillText("二つ名：『" + S.finalTitle + "』", 70, 575);
   x.fillStyle = "#cfeaff"; x.font = "24px sans-serif"; x.textAlign = "right";
-  x.fillText(S.bossResult === "win" ? "👑 世界を救った！" : "才能探し", 1130, 575);
+  x.fillText(S.bossResult === "win" ? "👑 完全制覇" : "才能探し", 1130, 575);
   x.textAlign = "left";
   const a = document.createElement("a");
   a.download = "talent-status.png"; a.href = cv.toDataURL("image/png"); a.click();
