@@ -496,7 +496,7 @@ const rand = (a,b)=>a+Math.random()*(b-a);
 const randi = (a,b)=>Math.floor(rand(a,b+1));
 const pick = arr => arr[Math.floor(Math.random()*arr.length)];
 function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); const t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
-function show(id){ document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active")); $(id).classList.add("active"); window.scrollTo(0,0); } function readyThenBegin(gate, begin){ if (gate._go) return; gate._go = 1; gate.onpointerdown = null; gate.innerHTML = '<div style="font-size:30px;font-weight:900;color:#ffe082;">よーい…</div>'; setTimeout(begin, 700); } function tapGuard(stage){ const g = document.createElement("div"); g.style.cssText = "position:absolute;inset:0;z-index:50;background:transparent;"; stage.style.position = "relative"; stage.appendChild(g); setTimeout(()=>g.remove(), 450); } function tapNext(stage, cb){ const b = document.createElement("button"); b.className = "btn"; b.textContent = "タップで次へ ▶"; b.style.cssText = "margin-top:14px"; let ready = false; stage.appendChild(b); try{ b.scrollIntoView({block:"nearest"}); }catch(e){} setTimeout(()=>{ ready = true; }, 120); b.onclick = ()=>{ if (!ready) return; b.remove(); cb(); }; } document.addEventListener("click", e=>{ const a = e.target.closest && e.target.closest("a[data-home]"); if (!a) return; const act = document.querySelector(".screen.active"); if (act && (act.id === "scr-game" || act.id === "scr-boss") && !confirm("トップ画面に戻りますか？\n進行中のデータは失われます")) e.preventDefault(); });
+function show(id){ document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active")); $(id).classList.add("active"); window.scrollTo(0,0); } function readyThenBegin(gate, begin){ if (gate._go) return; gate._go = 1; gate.onpointerdown = null; gate.innerHTML = '<div style="font-size:30px;font-weight:900;color:#ffe082;">よーい…</div>'; setTimeout(begin, 700); } function tapGuard(stage){ const g = document.createElement("div"); g.style.cssText = "position:absolute;inset:0;z-index:50;background:transparent;"; stage.style.position = "relative"; stage.appendChild(g); setTimeout(()=>g.remove(), 450); } function tapNext(stage, cb){ const b = document.createElement("button"); b.className = "btn"; b.textContent = "タップで次へ ▶"; b.style.cssText = "margin-top:14px"; let ready = false; stage.appendChild(b); try{ b.scrollIntoView({block:"nearest"}); }catch(e){} setTimeout(()=>{ ready = true; }, 120); b.onclick = ()=>{ if (!ready) return; b.remove(); cb(); }; } document.addEventListener("click", e=>{ const a = e.target.closest && e.target.closest("a[data-home]"); if (!a) return; const act = document.querySelector(".screen.active"); if (act && (act.id === "scr-game" || act.id === "scr-boss") && !confirm("トップ画面に戻りますか？\n進行中のデータは失われます")) e.preventDefault(); }); function fitText(el){ el.style.fontSize = ""; el.style.whiteSpace = "nowrap"; let fs = parseFloat(getComputedStyle(el).fontSize) || 52; while (el.scrollWidth > el.clientWidth && fs > 18){ fs -= 2; el.style.fontSize = fs + "px"; } }
 
 /* ---------- audio ---------- */
 let AC = null;
@@ -965,14 +965,14 @@ function gameDigit(stage, done){
     round++;
     const len = lens[round-1]; current = ""; input = ""; typed.textContent = "";
     for (let i = 0; i < len; i++) current += String(randi(0,9));
-    phase = "show"; showEl.textContent = current;
+    phase = "show"; showEl.textContent = current; fitText(showEl);
     T(()=>{ showEl.textContent = "？"; phase = "input"; }, 450 + len*200);
   }
   function judge(){
     phase = "judge";
     let prefix = 0; while (prefix < current.length && input[prefix] === current[prefix]) prefix++;
     if (input === current){ points += [34,33,33][round-1]; maxExact = current.length; jingle(true); showEl.textContent = "正解！"; }
-    else { points += Math.round(prefix/current.length * 22); jingle(false); showEl.textContent = current; }
+    else { points += Math.round(prefix/current.length * 22); jingle(false); showEl.textContent = current; fitText(showEl); }
     T(()=>{ if (round >= 3) done(clamp(points, 5, 100), "最大 " + maxExact + " 桁を完全再現");
             else tapNext(stage, startRound); }, 850);
   }
