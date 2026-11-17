@@ -314,7 +314,7 @@
 <body>
 <div class="wrap">
 <nav class="rfg-nav">
-  <a class="rfg-btn" href="https://red-freegames.github.io/">🏠 HOME</a>
+  <a class="rfg-btn" href="./" data-home="1">🏠 HOME</a>
   <a class="rfg-btn" href="https://red-freegames.github.io/">🎮 他のゲームを見る</a>
 </nav>
 
@@ -370,7 +370,7 @@
   <button class="btn" id="btnTweet">Xでシェア</button>
   <button class="btn sub" id="btnRestart">もう一度鑑定する</button>
   <nav class="rfg-nav" style="margin-top:16px;">
-    <a class="rfg-btn" href="https://red-freegames.github.io/">🏠 HOME</a>
+    <a class="rfg-btn" href="./" data-home="1">🏠 HOME</a>
     <a class="rfg-btn" href="https://red-freegames.github.io/">🎮 他のゲームを見る</a>
   </nav>
   <footer>実況・配信・動画投稿・収益化OK<br>才能ステータス鑑定所</footer>
@@ -496,7 +496,7 @@ const rand = (a,b)=>a+Math.random()*(b-a);
 const randi = (a,b)=>Math.floor(rand(a,b+1));
 const pick = arr => arr[Math.floor(Math.random()*arr.length)];
 function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); const t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
-function show(id){ document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active")); $(id).classList.add("active"); window.scrollTo(0,0); } function readyThenBegin(gate, begin){ if (gate._go) return; gate._go = 1; gate.onpointerdown = null; gate.innerHTML = '<div style="font-size:30px;font-weight:900;color:#ffe082;">よーい…</div>'; setTimeout(begin, 700); } function tapGuard(stage){ const g = document.createElement("div"); g.style.cssText = "position:absolute;inset:0;z-index:50;background:transparent;"; stage.style.position = "relative"; stage.appendChild(g); setTimeout(()=>g.remove(), 450); }
+function show(id){ document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active")); $(id).classList.add("active"); window.scrollTo(0,0); } function readyThenBegin(gate, begin){ if (gate._go) return; gate._go = 1; gate.onpointerdown = null; gate.innerHTML = '<div style="font-size:30px;font-weight:900;color:#ffe082;">よーい…</div>'; setTimeout(begin, 700); } function tapGuard(stage){ const g = document.createElement("div"); g.style.cssText = "position:absolute;inset:0;z-index:50;background:transparent;"; stage.style.position = "relative"; stage.appendChild(g); setTimeout(()=>g.remove(), 450); } function tapNext(stage, cb){ const b = document.createElement("button"); b.className = "btn"; b.textContent = "タップで次へ ▶"; b.style.cssText = "margin-top:14px;opacity:.5"; b.disabled = true; stage.appendChild(b); try{ b.scrollIntoView({block:"nearest"}); }catch(e){} setTimeout(()=>{ b.disabled = false; b.style.opacity = "1"; }, 350); b.onclick = ()=>{ if (b.disabled) return; b.remove(); cb(); }; } document.addEventListener("click", e=>{ const a = e.target.closest && e.target.closest("a[data-home]"); if (!a) return; const act = document.querySelector(".screen.active"); if (act && (act.id === "scr-game" || act.id === "scr-boss") && !confirm("トップ画面に戻りますか？\n進行中のデータは失われます")) e.preventDefault(); });
 
 /* ---------- audio ---------- */
 let AC = null;
@@ -731,7 +731,7 @@ function gameRhythm(stage, done){
         const avg = Math.round(scores.reduce((a,b)=>a+b,0)/scores.length);
         const avgErr = Math.round(errs.reduce((a,b)=>a+b,0)/errs.length*100);
         done(avg, "リズム再現の平均誤差 " + avgErr + "%");
-      } else playRound(); }, 850);
+      } else tapNext(stage, playRound); }, 850);
   };
   playRound();
 }
@@ -771,7 +771,7 @@ function gameFlash(stage, done){
     else { jingle(false); toast("❌ " + hit + "/" + litSet.length + " マス一致（光ったマスが正解）", 700); }
     T(()=>{ if (round >= 3){ const avg = ratios.reduce((a,b)=>a+b,0)/ratios.length;
       done(clamp(Math.round(avg*100), 5, 100), "配置の再現率 " + Math.round(avg*100) + "%");
-    } else startRound(); }, 800);
+    } else tapNext(stage, startRound); }, 800);
   };
   startRound();
 }
@@ -838,7 +838,7 @@ function gameObserve(stage, done){
             if (i === changedIdx){ correct++; speedBonus += clamp(Math.round(5 - (performance.now()-shownAt)/900), 0, 3); jingle(true); judgeToast(true); }
             else { cells[changedIdx].classList.add("lit"); jingle(false); judgeToast(false); }
             T(()=>{ if (round >= 4) done(clamp(correct*22 + speedBonus, 5, 100), "変化を " + correct + "/4 検出");
-                    else startRound(); }, 750); }; });
+                    else tapNext(stage, startRound); }, 750); }; });
       }, 600);
     }, showMs);
   }
@@ -974,7 +974,7 @@ function gameDigit(stage, done){
     if (input === current){ points += [34,33,33][round-1]; maxExact = current.length; jingle(true); showEl.textContent = "正解！"; }
     else { points += Math.round(prefix/current.length * 22); jingle(false); showEl.textContent = current; }
     T(()=>{ if (round >= 3) done(clamp(points, 5, 100), "最大 " + maxExact + " 桁を完全再現");
-            else startRound(); }, 850);
+            else tapNext(stage, startRound); }, 850);
   }
   startRound();
 }
@@ -1382,7 +1382,7 @@ function gameTarai(stage, done){
       if (round >= 3){
         const avg = Math.round(scores.reduce((a,b)=>a+b,0)/scores.length);
         done(clamp(avg, 5, 100), "最接近 " + (best === 999 ? "—" : Math.round(best) + "px") + " で回避");
-      } else startRound();
+      } else tapNext(stage, startRound);
     }, 1250);
   }
   function onHit(){
@@ -1479,7 +1479,7 @@ function startGame(idx){
     const gate = document.createElement("div");
     gate.className = "pad"; gate.style.fontSize = "17px"; gate.style.fontWeight = "700";
     gate.innerHTML = '<div>【ルール】<br>' + g.rule + '<br><br><span style="font-size:22px;font-weight:900;color:#ffe082;">▶ タップでスタート</span></div>';
-    gate.onpointerdown = ()=>{ ac(); (g.noReady ? begin() : readyThenBegin(gate, begin)); };
+    gate.onpointerdown = ()=>{ ac(); begin(); };
     stage.appendChild(gate);
   } else {
     begin();
@@ -1571,7 +1571,7 @@ function playSingle(g){
     const gate = document.createElement("div");
     gate.className = "pad"; gate.style.fontSize = "17px"; gate.style.fontWeight = "700";
     gate.innerHTML = '<div>【ルール】<br>' + g.rule + '<br><br><span style="font-size:22px;font-weight:900;color:#ffe082;">▶ タップでスタート</span></div>';
-    gate.onpointerdown = ()=>{ ac(); (g.noReady ? begin() : readyThenBegin(gate, begin)); };
+    gate.onpointerdown = ()=>{ ac(); begin(); };
     stage.appendChild(gate);
   } else begin();
 }
