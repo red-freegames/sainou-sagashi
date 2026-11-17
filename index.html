@@ -1226,7 +1226,7 @@ function gameDots(stage, done){
     if (ok){ correct++; jingle(true); } else jingle(false);
     msg.textContent = (ok ? "⭕ 正解！" : "❌ 不正解") + " 左 " + leftN + "個 ／ 右 " + rightN + "個 でした";
     T(()=>{ if (round >= 5) done(clamp(correct*20 - (5-correct)*8, 5, 100), "数の差を " + correct + "/5 直感で的中");
-            else startRound(); }, 1000);
+            else tapNext(stage, startRound); }, 1000);
   }
   bL.onclick = ()=>answer("L"); bR.onclick = ()=>answer("R");
   startRound();
