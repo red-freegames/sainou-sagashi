@@ -496,7 +496,7 @@ const rand = (a,b)=>a+Math.random()*(b-a);
 const randi = (a,b)=>Math.floor(rand(a,b+1));
 const pick = arr => arr[Math.floor(Math.random()*arr.length)];
 function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); const t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
-function show(id){ document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active")); $(id).classList.add("active"); window.scrollTo(0,0); }
+function show(id){ document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active")); $(id).classList.add("active"); window.scrollTo(0,0); } function readyThenBegin(gate, begin){ if (gate._go) return; gate._go = 1; gate.onpointerdown = null; gate.innerHTML = '<div style="font-size:30px;font-weight:900;color:#ffe082;">よーい…</div>'; setTimeout(begin, 700); } function tapGuard(stage){ const g = document.createElement("div"); g.style.cssText = "position:absolute;inset:0;z-index:50;background:transparent;"; stage.style.position = "relative"; stage.appendChild(g); setTimeout(()=>g.remove(), 450); }
 
 /* ---------- audio ---------- */
 let AC = null;
@@ -1464,7 +1464,7 @@ function startGame(idx){
   const stage = $("stage"); stage.innerHTML = "";
   show("scr-game");
   const begin = ()=>{
-    stage.innerHTML = "";
+    stage.innerHTML = ""; tapGuard(stage);
     g.run(stage, (score, detail)=>{
       clearTimers(); setTimebar(null);
       if (!catGames[g.cat]) catGames[g.cat] = [];
@@ -1479,7 +1479,7 @@ function startGame(idx){
     const gate = document.createElement("div");
     gate.className = "pad"; gate.style.fontSize = "17px"; gate.style.fontWeight = "700";
     gate.innerHTML = '<div>【ルール】<br>' + g.rule + '<br><br><span style="font-size:22px;font-weight:900;color:#ffe082;">▶ タップでスタート</span></div>';
-    gate.onpointerdown = ()=>{ ac(); begin(); };
+    gate.onpointerdown = ()=>{ ac(); readyThenBegin(gate, begin); };
     stage.appendChild(gate);
   } else {
     begin();
@@ -1560,7 +1560,7 @@ function playSingle(g){
   const stage = $("stage"); stage.innerHTML = "";
   show("scr-game");
   const begin = ()=>{
-    stage.innerHTML = "";
+    stage.innerHTML = ""; tapGuard(stage);
     g.run(stage, (score, detail)=>{
       clearTimers(); setTimebar(null);
       beep(1046,.1);
@@ -1571,7 +1571,7 @@ function playSingle(g){
     const gate = document.createElement("div");
     gate.className = "pad"; gate.style.fontSize = "17px"; gate.style.fontWeight = "700";
     gate.innerHTML = '<div>【ルール】<br>' + g.rule + '<br><br><span style="font-size:22px;font-weight:900;color:#ffe082;">▶ タップでスタート</span></div>';
-    gate.onpointerdown = ()=>{ ac(); begin(); };
+    gate.onpointerdown = ()=>{ ac(); readyThenBegin(gate, begin); };
     stage.appendChild(gate);
   } else begin();
 }
