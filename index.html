@@ -745,7 +745,7 @@ function gameFlash(stage, done){
   const btn = document.createElement("button"); btn.className = "btn"; btn.textContent = "決定"; btn.style.display = "none";
   stage.appendChild(grid); stage.appendChild(btn);
   let round = 0, litSet = [], selected = new Set(), ratios = [], phase = "show";
-  function startRound(){
+  function startRound(){ tapGuard(stage);
     round++;
     const litCount = [7,10,13][round-1];
     litSet = shuffle([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24]).slice(0, litCount);
@@ -814,7 +814,7 @@ function gameObserve(stage, done){
   const grid = document.createElement("div"); grid.className = "grid";
   stage.appendChild(grid);
   let round = 0, correct = 0, speedBonus = 0;
-  function startRound(){
+  function startRound(){ tapGuard(stage);
     round++;
     const dim = [[2,2],[2,3],[3,3],[3,4]][round-1];
     const cols = dim[1], total = dim[0]*dim[1];
@@ -857,7 +857,7 @@ function gameAnagram(stage, done){
   stage.appendChild(built); stage.appendChild(tiles);
   let round = 0, mistakes = 0; const startAt = performance.now();
   let word = "", progress = 0;
-  function startRound(){
+  function startRound(){ tapGuard(stage);
     round++;
     word = pick(ANA_POOLS[round-1]); progress = 0; built.textContent = "";
     tiles.innerHTML = "";
@@ -893,7 +893,7 @@ function gameSpatial(stage, done){
     pat.forEach(v=>{ const c = document.createElement("div"); c.className = "cell" + (v ? " lit" : "");
       c.style.aspectRatio = "1"; if (size) c.style.height = size + "px"; el.appendChild(c); });
   }
-  function startRound(){
+  function startRound(){ tapGuard(stage);
     round++; busy = false; shownAt = performance.now();
     let pat = [0,0,0,0,0,0,0,0,0];
     const fillN = [6,6,7,7][round-1];
@@ -961,7 +961,7 @@ function gameDigit(stage, done){
       typed.textContent = input; };
     pad.appendChild(b);
   });
-  function startRound(){
+  function startRound(){ tapGuard(stage);
     round++;
     const len = lens[round-1]; current = ""; input = ""; typed.textContent = "";
     for (let i = 0; i < len; i++) current += String(randi(0,9));
@@ -1066,7 +1066,7 @@ function gamePattern(stage, done){
   const choices = document.createElement("div"); choices.className = "choices";
   stage.appendChild(showEl); stage.appendChild(choices);
   let round = 0, correct = 0, speedBonus = 0, busy = false, shownAt = 0;
-  function startRound(){
+  function startRound(){ tapGuard(stage);
     round++; busy = false; shownAt = performance.now();
     const q = pick(PAT_TIERS[round-1])();
     showEl.textContent = q.seq;
@@ -1107,7 +1107,7 @@ function gameCalc(stage, done){
     if (r === 4){ const b = randi(7,13), q = randi(13,24); return { text:(b*q) + " ÷ " + b, ans:q }; }
     const a = randi(19,34), b = randi(16,24); return { text:a + " × " + b, ans:a*b };
   }
-  function startRound(){
+  function startRound(){ tapGuard(stage);
     round++; busy = false; shownAt = performance.now();
     const q = makeQ(round);
     showEl.textContent = q.text + " = ?";
@@ -1145,7 +1145,7 @@ function gameStroop(stage, done){
   const choices = document.createElement("div"); choices.className = "choices";
   stage.appendChild(word); stage.appendChild(choices);
   let qn = 0, correct = 0, speedBonus = 0, answered = false, shownAt = 0, inkIdx = 0, curBtns = [];
-  function startQ(){
+  function startQ(){ tapGuard(stage);
     qn++; answered = false; shownAt = performance.now();
     inkIdx = randi(0, 3);
     let wordIdx = inkIdx;
@@ -1209,7 +1209,7 @@ function gameDots(stage, done){
       panel.appendChild(d);
     }
   }
-  function startRound(){
+  function startRound(){ tapGuard(stage);
     round++; phase = "show"; btnRow.style.display = "none";
     const base = randi(16, 26);
     const more = Math.max(base + 2, Math.round(base * RATIOS[round-1]));
@@ -1242,7 +1242,7 @@ function gameClock(stage, done){
   stage.appendChild(showEl); stage.appendChild(msg); stage.appendChild(btn);
   const TARGETS = [5, 10];
   let round = 0, scores = [], errs = [], startedAt = 0, phase = "ready";
-  function startRound(){
+  function startRound(){ tapGuard(stage);
     round++; phase = "ready";
     showEl.textContent = "目標 " + TARGETS[round-1] + "秒";
     msg.textContent = "スタートを押すと計測開始。画面には何も出ません。";
@@ -1345,7 +1345,7 @@ function gameTarai(stage, done){
     const p = clamp((y - START_Y) / (HEAD_Y - TUB_H - START_Y), 0, 1);
     shadow.style.width = (40 + p*110) + "px"; shadow.style.opacity = 0.3 + p*0.5;
   }
-  function startRound(){
+  function startRound(){ tapGuard(stage);
     round++; phase = "hang"; dodged = false;
     if (iv) clearInterval(iv);
     person.textContent = "🧍"; person.style.transform = "translateX(-50%)";
