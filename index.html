@@ -1446,7 +1446,7 @@ const GAMES = [
     rule:"色の名前が、別の色で表示されます。答えるのは「文字の意味」ではなく「文字の色」です。全5問。後半は選択肢の文字にも色がついて、さらに惑わせてきます。1問4秒以内に答えてください。" },
   { cat:"intuition", title:"点の数くらべ", instr:"一瞬表示される点の群れ、多い方を直感で当ててください。", run:gameDots,
     rule:"左右に点の群れが一瞬だけ表示されます。数が多い方を直感で当ててください。全5問、だんだん数の差が際どくなります。" },
-  { cat:"time",    title:"体内時計", instr:"秒数は表示されません。目標の秒数がたったと思ったらストップ。", run:gameClock,
+  { cat:"time",    title:"体内時計", instr:"秒数は表示されません。目標の秒数がたったと思ったらストップ。", run:gameClock, noReady:true,
     rule:"スタートを押すと計測が始まりますが、画面には秒数が表示されません。目標の秒数がたったと思ったらストップを押してください。全2回（5秒・10秒）。" },
   { cat:"nerve",   title:"たらい落とし", instr:"頭上から金色のたらいが落ちてきます。当たるギリギリでよけてください。", run:gameTarai,
     rule:"頭上の金色のたらいが、合図で落ちてきます。タップで横によけてください。頭に当たるギリギリまで待つほど高得点。当たったら0点、早くよけすぎても低得点です。全3回、だんだん速くなります。" }
@@ -1479,7 +1479,7 @@ function startGame(idx){
     const gate = document.createElement("div");
     gate.className = "pad"; gate.style.fontSize = "17px"; gate.style.fontWeight = "700";
     gate.innerHTML = '<div>【ルール】<br>' + g.rule + '<br><br><span style="font-size:22px;font-weight:900;color:#ffe082;">▶ タップでスタート</span></div>';
-    gate.onpointerdown = ()=>{ ac(); readyThenBegin(gate, begin); };
+    gate.onpointerdown = ()=>{ ac(); (g.noReady ? begin() : readyThenBegin(gate, begin)); };
     stage.appendChild(gate);
   } else {
     begin();
@@ -1571,7 +1571,7 @@ function playSingle(g){
     const gate = document.createElement("div");
     gate.className = "pad"; gate.style.fontSize = "17px"; gate.style.fontWeight = "700";
     gate.innerHTML = '<div>【ルール】<br>' + g.rule + '<br><br><span style="font-size:22px;font-weight:900;color:#ffe082;">▶ タップでスタート</span></div>';
-    gate.onpointerdown = ()=>{ ac(); readyThenBegin(gate, begin); };
+    gate.onpointerdown = ()=>{ ac(); (g.noReady ? begin() : readyThenBegin(gate, begin)); };
     stage.appendChild(gate);
   } else begin();
 }
